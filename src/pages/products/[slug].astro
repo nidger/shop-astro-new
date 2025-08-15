@@ -33,6 +33,9 @@ const recommendedProducts = allProducts
 ---
 <Layout>
   <main class="max-w-6xl mx-auto px-6 py-8">
+    <div class="mb-4 md:hidden">
+      <Breadcrumb links={breadcrumbLinks} />
+    </div>
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-8 lg:gap-x-16">
       <!-- Left Column: Image -->
       <div class="bg-muted rounded-lg aspect-square xl:col-span-3">
@@ -47,7 +50,7 @@ const recommendedProducts = allProducts
       </div>
       <!-- Right Column: Details -->
       <div class="py-4 xl:col-span-2">
-        <div class="mb-4">
+        <div class="mb-4 hidden md:block">
           <Breadcrumb links={breadcrumbLinks} />
         </div>
         <h1 class="text-3xl md:text-4xl font-bold">{product.title}</h1>
