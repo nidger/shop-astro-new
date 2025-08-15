@@ -1,9 +1,9 @@
 ---
 import ProductCard from "./ProductCard.astro";
 
-const { title, products, emoji } = Astro.props;
+const { id, title, products, emoji } = Astro.props;
 ---
-<section class="px-6 py-8">
+<section id={id} class="px-6 py-8">
   <div class="flex items-center space-x-2 mb-6">
     {emoji && <span class="text-2xl">{emoji}</span>}
     <h2 class="text-xl font-bold text-foreground">{title}</h2>
