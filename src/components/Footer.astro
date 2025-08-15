@@ -1,0 +1,55 @@
+---
+import { Button } from "@/components/ui/button";
+import { Twitter, Github, Instagram, Youtube, MessageCircle } from "lucide-react";
+---
+<footer class="px-6 py-8 space-y-8">
+  <!-- Contest Section -->
+  <div class="bg-section-bg rounded-lg p-6 flex items-center justify-between">
+    <div class="flex items-center space-x-4">
+      <div class="text-4xl">🎨</div>
+      <div>
+        <h3 class="text-lg font-bold text-foreground mb-1">
+          The Spirit of Astro Design Contest
+        </h3>
+        <p class="text-sm text-muted-foreground">
+          Enter for a chance to win a custom merchandise pack and support Astro's open source mission!
+        </p>
+      </div>
+    </div>
+    
+    <Button className="bg-white text-black hover:bg-gray-100 px-6 py-2 rounded-full font-medium">
+      Submit your designs
+    </Button>
+  </div>
+  
+  <!-- Bottom Footer -->
+  <div class="border-t border-border pt-6">
+    <div class="flex items-center justify-between">
+      <p class="text-sm text-muted-foreground">
+        © 2024 | Astro | All rights reserved
+      </p>
+      
+      <div class="flex items-center space-x-4">
+        <Twitter className="h-5 w-5 text-muted-foreground hover:text-foreground cursor-pointer" />
+        <MessageCircle className="h-5 w-5 text-muted-foreground hover:text-foreground cursor-pointer" />
+        <Github className="h-5 w-5 text-muted-foreground hover:text-foreground cursor-pointer" />
+        <Instagram className="h-5 w-5 text-muted-foreground hover:text-foreground cursor-pointer" />
+        <span class="text-muted-foreground">•</span>
+        <Youtube className="h-5 w-5 text-muted-foreground hover:text-foreground cursor-pointer" />
+      </div>
+      
+      <div class="flex items-center space-x-4 text-sm text-muted-foreground">
+        <a href="#" class="hover:text-foreground">Privacy Policy</a>
+        <a href="#" class="hover:text-foreground">Privacy Policy</a>
+        <a href="#" class="hover:text-foreground">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+  
+  <!-- View All Products Button -->
+  <div class="pt-4">
+    <Button class="w-full bg-white text-black hover:bg-gray-100 py-3 rounded-full font-medium">
+      View all products
+    </Button>
+  </div>
+</footer>
