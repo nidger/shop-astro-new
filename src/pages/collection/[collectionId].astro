@@ -1,0 +1,35 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ProductSection from '../../components/ProductSection.astro';
+import { Button } from '../../components/ui/button';
+import { allProducts, collections } from '../../data/products.ts';
+
+export function getStaticPaths() {
+  return collections.map((collection) => ({
+    params: { collectionId: collection.id },
+  }));
+}
+
+const { collectionId } = Astro.params;
+
+const currentCollection = collections.find(c => c.id === collectionId);
+const productsInCollection = allProducts.filter(p => p.collectionId === collectionId);
+
+if (!currentCollection) {
+  return Astro.redirect('/404');
+}
+---
+<Layout>
+  <main class="py-8">
+    <ProductSection 
+      title={currentCollection.title}
+      products={productsInCollection}
+    />
+
+    <div class="text-center mt-12">
+      <a href="/">
+        <Button variant="outline">View All Products</Button>
+      </a>
+    </div>
+  </main>
+</Layout>
