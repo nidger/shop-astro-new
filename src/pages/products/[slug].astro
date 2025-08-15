@@ -7,12 +7,12 @@ import { allProducts, collections } from '../../data/products.ts';
 
 export function getStaticPaths() {
   return allProducts.map((product) => ({
-    params: { id: product.id },
+    params: { slug: product.slug },
   }));
 }
 
-const { id } = Astro.params;
-const product = allProducts.find(p => p.id === id);
+const { slug } = Astro.params;
+const product = allProducts.find(p => p.slug === slug);
 
 if (!product) {
   return Astro.redirect('/404');
