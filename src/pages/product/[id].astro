@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import { Button } from '../../components/ui/button';
 import Breadcrumb from '../../components/Breadcrumb.astro';
+import ProductSection from '../../components/ProductSection.astro';
 import { allProducts, collections } from '../../data/products.ts';
 
 export function getStaticPaths() {
@@ -19,12 +20,16 @@ if (!product) {
 
 const productCollection = collections.find(c => c.id === product.collectionId);
 
-// Corrected breadcrumb links
 const breadcrumbLinks = [
   { text: 'Home', href: '/' },
   { text: 'Collections', href: '/collections' },
   { text: productCollection.title, href: `/collection/${productCollection.id}` }
 ];
+
+// Logic for recommended products
+const recommendedProducts = allProducts
+  .filter(p => p.collectionId === product.collectionId && p.id !== product.id)
+  .slice(0, 4);
 ---
 <Layout>
   <main class="max-w-6xl mx-auto px-6 py-8">
@@ -66,4 +71,14 @@ const breadcrumbLinks = [
       </div>
     </div>
   </main>
+
+  <!-- This section is now outside the narrow main container -->
+  {recommendedProducts.length > 0 && (
+    <div class="py-16">
+      <ProductSection 
+        title="You might also like"
+        products={recommendedProducts}
+      />
+    </div>
+  )}
 </Layout>
