@@ -1,15 +1,22 @@
 ---
 import { Button } from "@/components/ui/button";
+import heroImage from '../assets/garden_bench_looking_into_lovely_garden_with_path.jpg';
 ---
-<section class="relative px-6 py-32 text-center overflow-hidden">
-  <!-- Background gradient sphere -->
-  <div class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-primary via-purple-500 to-pink-500 rounded-full opacity-60 blur-3xl transform translate-x-32 -translate-y-16"></div>
-  
-  <div class="relative z-10">
+<section class="relative px-6 pt-56 pb-16 text-center overflow-hidden">
+  <!-- Hero Image -->
+  <img
+    src={heroImage.src}
+    alt="Garden bench looking into a lovely garden with a path"
+    width={heroImage.width}
+    height={heroImage.height}
+    class="absolute inset-0 w-full h-full object-cover"
+  />
+
+  <div class="relative z-10 pt-16">
     <h1 class="text-4xl md:text-5xl font-bold text-foreground mb-8">
       Time to suit up, Astronaut.
     </h1>
-    
+
     <a href="#summer-products">
       <Button className="bg-white text-black hover:bg-gray-100 px-8 py-2 rounded-full font-medium">
         Shop now
