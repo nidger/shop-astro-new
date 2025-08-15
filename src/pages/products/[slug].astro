@@ -42,6 +42,7 @@ const recommendedProducts = allProducts
           width={product.image.width}
           height={product.image.height}
           class="w-full h-full object-cover rounded-lg"
+          transition:name={`product-image-${product.id}`}
         />
       </div>
       <!-- Right Column: Details -->

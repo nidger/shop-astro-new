@@ -10,6 +10,7 @@ const { id, slug, image, title, price, colors } = Astro.props;
         width={image.width}
         height={image.height}
         class="w-full h-full object-cover"
+        transition:name={`product-image-${id}`}
       />
     </div>
     
