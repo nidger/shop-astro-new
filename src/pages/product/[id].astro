@@ -1,7 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { Button } from '../../components/ui/button';
-import { allProducts } from '../../data/products.ts';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import { allProducts, collections } from '../../data/products.ts';
 
 export function getStaticPaths() {
   return allProducts.map((product) => ({
@@ -15,6 +16,15 @@ const product = allProducts.find(p => p.id === id);
 if (!product) {
   return Astro.redirect('/404');
 }
+
+const productCollection = collections.find(c => c.id === product.collectionId);
+
+// Corrected breadcrumb links
+const breadcrumbLinks = [
+  { text: 'Home', href: '/' },
+  { text: 'Collections', href: '/collections' },
+  { text: productCollection.title, href: `/collection/${productCollection.id}` }
+];
 ---
 <Layout>
   <main class="max-w-6xl mx-auto px-6 py-8">
@@ -31,6 +41,9 @@ if (!product) {
       </div>
       <!-- Right Column: Details -->
       <div class="py-4">
+        <div class="mb-4">
+          <Breadcrumb links={breadcrumbLinks} />
+        </div>
         <h1 class="text-3xl md:text-4xl font-bold">{product.title}</h1>
         <p class="text-2xl md:text-3xl text-price my-4">{product.price}</p>
         

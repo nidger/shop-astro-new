@@ -23,7 +23,7 @@ export const allProducts = [
 ];
 
 export const collections = [
-    { id: "summer", title: "SUMMER 2025", image: bucketHat },
-    { id: "apparel", title: "APPAREL", image: blueHoodie },
-    { id: "stickers", title: "STICKERS", image: stickerPack }
+    { id: "summer", title: "Summer 2025", image: bucketHat },
+    { id: "apparel", title: "Apparel", image: blueHoodie },
+    { id: "stickers", title: "Stickers", image: stickerPack }
 ];

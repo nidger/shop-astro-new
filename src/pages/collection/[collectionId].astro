@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import ProductCard from '../../components/ProductCard.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
 import { Button } from '../../components/ui/button';
 import { allProducts, collections } from '../../data/products.ts';
 
@@ -18,15 +19,26 @@ const productsInCollection = allProducts.filter(p => p.collectionId === collecti
 if (!currentCollection) {
   return Astro.redirect('/404');
 }
+
+// Define the links for the breadcrumb component
+const breadcrumbLinks = [
+  { text: 'Home', href: '/' },
+  { text: 'Collections', href: '/collections' },
+  { text: currentCollection.title, href: null } // Current page
+];
 ---
 <Layout>
   <main class="px-6 py-8">
+    <div class="mb-8">
+      <Breadcrumb links={breadcrumbLinks} />
+    </div>
+
     <div>
       <h1 class="text-4xl font-bold">{currentCollection.title}</h1>
-      <p class="text-muted-foreground mt-1 mb-8">{productsInCollection.length} products</p>
+      <p class="text-muted-foreground mt-1">{productsInCollection.length} products</p>
     </div>
     
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
       {productsInCollection.map((product) => (
         <ProductCard
           id={product.id}
