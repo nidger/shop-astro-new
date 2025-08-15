@@ -28,9 +28,9 @@ const breadcrumbLinks = [
 ---
 <Layout>
   <main class="max-w-6xl mx-auto px-6 py-8">
-    <div class="grid md:grid-cols-2 gap-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-8 lg:gap-x-16">
       <!-- Left Column: Image -->
-      <div class="bg-muted rounded-lg aspect-square">
+      <div class="bg-muted rounded-lg aspect-square xl:col-span-3">
         <img 
           src={product.image.src} 
           alt={product.title}
@@ -40,7 +40,7 @@ const breadcrumbLinks = [
         />
       </div>
       <!-- Right Column: Details -->
-      <div class="py-4">
+      <div class="py-4 xl:col-span-2">
         <div class="mb-4">
           <Breadcrumb links={breadcrumbLinks} />
         </div>
