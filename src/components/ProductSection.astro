@@ -12,6 +12,7 @@ const { title, products, emoji } = Astro.props;
   <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
     {products.map((product) => (
       <ProductCard
+        id={product.id}
         image={product.image}
         title={product.title}
         price={product.price}
