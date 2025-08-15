@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import ProductSection from '../../components/ProductSection.astro';
+import ProductCard from '../../components/ProductCard.astro';
 import { Button } from '../../components/ui/button';
 import { allProducts, collections } from '../../data/products.ts';
 
@@ -20,11 +20,23 @@ if (!currentCollection) {
 }
 ---
 <Layout>
-  <main class="py-8">
-    <ProductSection 
-      title={currentCollection.title}
-      products={productsInCollection}
-    />
+  <main class="px-6 py-8">
+    <div>
+      <h1 class="text-4xl font-bold">{currentCollection.title}</h1>
+      <p class="text-muted-foreground mt-1 mb-8">{productsInCollection.length} products</p>
+    </div>
+    
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {productsInCollection.map((product) => (
+        <ProductCard
+          id={product.id}
+          image={product.image}
+          title={product.title}
+          price={product.price}
+          colors={product.colors}
+        />
+      ))}
+    </div>
 
     <div class="text-center mt-12">
       <a href="/">
