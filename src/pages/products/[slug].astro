@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import Layout from '../../layouts/Layout.astro';
-import AddToCartButton from '../../components/AddToCartButton.tsx';
+import { ProductPurchase } from '../../components/ProductPurchase.tsx';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import ProductSection from '../../components/ProductSection.astro';
 import { allProducts, collections } from '../../data/products.ts';
@@ -73,7 +73,7 @@ const recommendedProducts = allProducts
           </div>
         )}
 
-        <AddToCartButton client:load product={product} />
+        <ProductPurchase client:load product={product} />
       </div>
     </div>
   </main>

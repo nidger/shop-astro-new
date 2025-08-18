@@ -3,15 +3,17 @@ import { useCartStore } from '@/stores/cartStore';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter } from '@/components/ui/sheet';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Trash2, Loader2 } from 'lucide-react';
+import { Trash2, Loader2, Plus, Minus } from 'lucide-react';
 
 export function CartSheet({ children }: { children: React.ReactNode }) {
-  const { items, removeFromCart, clearCart } = useCartStore();
+  const { items, removeFromCart, clearCart, increaseQuantity, decreaseQuantity } = useCartStore();
   const [loading, setLoading] = useState(false);
 
+  const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
+
   const totalPrice = items.reduce((acc, item) => {
-    const price = parseFloat(item.price.substring(1));
-    return acc + price;
+    const price = parseFloat(item.product.price.substring(1));
+    return acc + price * item.quantity;
   }, 0);
 
   const handleCheckout = async () => {
@@ -22,7 +24,7 @@ export function CartSheet({ children }: { children: React.ReactNode }) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ items: items.map(item => ({ id: item.id })) }),
+        body: JSON.stringify({ items: items.map(item => ({ id: item.product.id, quantity: item.quantity })) }),
       });
 
       if (response.ok) {
@@ -30,11 +32,9 @@ export function CartSheet({ children }: { children: React.ReactNode }) {
         window.location.href = url;
       } else {
         console.error('Failed to create checkout session');
-        // Here you could show an error message to the user
       }
     } catch (error) {
       console.error('An error occurred during checkout:', error);
-      // Here you could show an error message to the user
     } finally {
       setLoading(false);
     }
@@ -45,21 +45,26 @@ export function CartSheet({ children }: { children: React.ReactNode }) {
       <SheetTrigger asChild>{children}</SheetTrigger>
       <SheetContent className="flex flex-col">
         <SheetHeader>
-          <SheetTitle>Shopping Cart ({items.length})</SheetTitle>
+          <SheetTitle>Shopping Cart ({totalItems})</SheetTitle>
         </SheetHeader>
         <ScrollArea className="flex-grow pr-4">
           {items.length > 0 ? (
             <div className="space-y-4">
               {items.map((item) => (
-                <div key={item.id} className="flex items-center justify-between">
+                <div key={item.product.id} className="flex items-start justify-between">
                   <div className="flex items-center gap-4">
-                    <img src={item.image.src} alt={item.title} width={64} height={64} className="rounded-md" />
+                    <img src={item.product.image.src} alt={item.product.title} width={64} height={64} className="rounded-md" />
                     <div>
-                      <p className="font-medium">{item.title}</p>
-                      <p className="text-sm text-muted-foreground">{item.price}</p>
+                      <p className="font-medium">{item.product.title}</p>
+                      <p className="text-sm text-muted-foreground">{item.product.price}</p>
+                      <div className="flex items-center gap-2 mt-2">
+                        <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => decreaseQuantity(item.product.id)}><Minus className="h-4 w-4" /></Button>
+                        <span>{item.quantity}</span>
+                        <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => increaseQuantity(item.product.id)}><Plus className="h-4 w-4" /></Button>
+                      </div>
                     </div>
                   </div>
-                  <Button variant="ghost" size="icon" onClick={() => removeFromCart(item.id)}>
+                  <Button variant="ghost" size="icon" onClick={() => removeFromCart(item.product.id)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>

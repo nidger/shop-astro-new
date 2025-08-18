@@ -31,7 +31,7 @@ export const POST: APIRoute = async ({ request }) => {
           },
           unit_amount: priceInCents,
         },
-        quantity: 1,
+        quantity: cartItem.quantity,
       };
     });
 
