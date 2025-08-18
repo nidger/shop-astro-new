@@ -35,12 +35,14 @@ export const POST: APIRoute = async ({ request }) => {
       };
     });
 
+    const cancel_url = request.headers.get('referer') || `${request.headers.get('origin')}/`;
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: line_items,
       mode: 'payment',
       success_url: `${request.headers.get('origin')}/order/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${request.headers.get('origin')}/`,
+      cancel_url: cancel_url,
     });
 
     if (session.url) {
