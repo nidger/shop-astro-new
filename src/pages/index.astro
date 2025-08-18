@@ -5,6 +5,7 @@ import HeroSection from '../components/HeroSection.astro';
 import ProductSection from '../components/ProductSection.astro';
 import CollectionSection from '../components/CollectionSection.astro';
 import { allProducts } from '../data/products.ts';
+import { Button } from '../components/ui/button';
 
 // Recreate the specific product lists from the single source of truth
 const summerProducts = allProducts.slice(0, 4);
@@ -32,6 +33,7 @@ const collections = [
 
 <Layout>
   <HeroSection />
+  
   <main>
     <ProductSection 
       id="summer-products"
@@ -44,6 +46,25 @@ const collections = [
       products={featuredProducts}
     />
     <CollectionSection collections={collections} />
+    <!-- Contest Section -->
+    <div class="px-6">
+      <div class="bg-section-bg rounded-lg p-6 flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <div class="text-4xl">🎨</div>
+          <div>
+            <h3 class="text-lg font-bold text-foreground mb-1">
+              The Spirit of Astro Design Contest
+            </h3>
+            <p class="text-sm text-muted-foreground">
+              Enter for a chance to win a custom merchandise pack and support Astro's open source mission!
+            </p>
+          </div>
+        </div>
+
+        <Button className="bg-white text-black hover:bg-gray-100 px-6 py-2 rounded-full font-medium">
+          Submit your designs
+        </Button>
+      </div>
+    </div>
   </main>
-  <Footer />
 </Layout>

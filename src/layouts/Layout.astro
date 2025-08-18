@@ -2,6 +2,7 @@
 import '../styles/globals.css';
 import Header from '../components/Header.astro';
 import { ViewTransitions } from 'astro:transitions';
+import Footer from '../components/Footer.astro';
 ---
 <!doctype html>
 <html lang="en" class="scroll-smooth">
@@ -17,5 +18,6 @@ import { ViewTransitions } from 'astro:transitions';
   <body>
     <Header />
     <slot />
+    <Footer />
   </body>
 </html>
