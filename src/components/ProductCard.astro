@@ -1,14 +1,16 @@
 ---
+import { Image } from 'astro:assets';
 const { id, slug, image, title, price, colors } = Astro.props;
 ---
 <a href={`/products/${slug}`}>
   <div class="bg-card rounded-lg p-4 hover:bg-card-hover transition-colors cursor-pointer h-full flex flex-col">
     <div class="aspect-square bg-muted rounded-lg mb-3 overflow-hidden">
-      <img 
-        src={image.src} 
+      <Image 
+        src={image} 
         alt={title}
-        width={image.width}
-        height={image.height}
+        widths={[200, 400, 800]}
+        sizes="(max-width: 768px) 200px, 400px"
+        format="webp"
         class="w-full h-full object-cover"
         transition:name={`product-image-${id}`}
       />
