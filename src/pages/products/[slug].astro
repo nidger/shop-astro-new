@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { Button } from '../../components/ui/button';
+import AddToCartButton from '../../components/AddToCartButton.tsx';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import ProductSection from '../../components/ProductSection.astro';
 import { allProducts, collections } from '../../data/products.ts';
@@ -71,7 +71,7 @@ const recommendedProducts = allProducts
           </div>
         )}
 
-        <Button size="lg" className="w-full mt-6">Add to Cart</Button>
+        <AddToCartButton client:load product={product} />
       </div>
     </div>
   </main>
