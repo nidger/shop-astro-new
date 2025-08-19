@@ -82,7 +82,7 @@ export function CartSheet({ children }: { children: React.ReactNode }) {
               <Button onClick={handleCheckout} loading={loading} fullWidth size="lg">
                 Checkout
               </Button>
-              <Button variant="outline" fullWidth onClick={() => clearCart()}>
+              <Button variant="outline" fullWidth onClick={() => clearCart()} size="lg">
                 Clear Cart
               </Button>
             </div>
