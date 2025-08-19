@@ -8,16 +8,21 @@ type Product = (typeof allProducts)[0];
 
 export function ProductPurchase({ product }: { product: Product }) {
   const [quantity, setQuantity] = useState(1);
+  const [loading, setLoading] = useState(false);
   const { addToCart } = useCartStore();
 
   const handleAddToCart = () => {
-    addToCart(product, quantity);
+    setLoading(true);
+    setTimeout(() => {
+      addToCart(product, quantity);
+      setLoading(false);
+    }, 1000); // Simulate a 1-second delay
   };
 
   return (
     <div className="flex items-center gap-4">
       <QuantityInput initialQuantity={1} onQuantityChange={setQuantity} />
-      <Button onClick={handleAddToCart} size="lg">Add to Cart</Button>
+      <Button onClick={handleAddToCart} loading={loading} size="lg">Add to Cart</Button>
     </div>
   );
 }
