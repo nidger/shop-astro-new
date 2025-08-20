@@ -5,8 +5,8 @@ import { MobileNavigation } from './MobileNavigation.tsx';
 ---
 <header class="flex items-center justify-between px-6 py-4 bg-background">
   <!-- Left: Logo -->
-  <div class="flex items-center space-x-2">
-    <a href="/" aria-label="AstroMART Homepage">
+  <div class="flex-1">
+    <a href="/" aria-label="AstroMART Homepage" class="inline-block">
       <div class="text-2xl font-bold text-foreground">
         <span class="text-primary">A</span>stro<span class="text-primary">MART</span>
       </div>
@@ -14,12 +14,12 @@ import { MobileNavigation } from './MobileNavigation.tsx';
   </div>
 
   <!-- Center: Desktop Navigation (Desktop only) -->
-  <div class="hidden md:flex justify-center flex-grow">
+  <div class="hidden md:flex justify-center">
     <DesktopNavigation client:load />
   </div>
 
   <!-- Right: Actions -->
-  <div class="flex items-center gap-2">
+  <div class="flex-1 flex justify-end items-center gap-2">
     <ShoppingCartButton client:load />
     <div class="md:hidden">
       <MobileNavigation client:load />
