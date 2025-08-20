@@ -1,8 +1,10 @@
 ---
 import ShoppingCartButton from './ShoppingCartButton.tsx';
-import { Navigation } from './Navigation.tsx';
+import { DesktopNavigation } from './DesktopNavigation.tsx';
+import { MobileNavigation } from './MobileNavigation.tsx';
 ---
 <header class="flex items-center justify-between px-6 py-4 bg-background">
+  <!-- Left: Logo -->
   <div class="flex items-center space-x-2">
     <a href="/" aria-label="AstroMART Homepage">
       <div class="text-2xl font-bold text-foreground">
@@ -10,12 +12,17 @@ import { Navigation } from './Navigation.tsx';
       </div>
     </a>
   </div>
-  
-  <div class="flex-grow flex justify-center">
-    <Navigation client:load />
+
+  <!-- Center: Desktop Navigation (Desktop only) -->
+  <div class="hidden md:flex justify-center flex-grow">
+    <DesktopNavigation client:load />
   </div>
 
-  <div class="flex justify-end">
+  <!-- Right: Actions -->
+  <div class="flex items-center gap-2">
     <ShoppingCartButton client:load />
+    <div class="md:hidden">
+      <MobileNavigation client:load />
+    </div>
   </div>
 </header>
