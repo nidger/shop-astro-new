@@ -20,7 +20,7 @@ export function ProductPurchase({ product }: { product: Product }) {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
       <QuantityInput initialQuantity={1} onQuantityChange={setQuantity} />
       <Button onClick={handleAddToCart} loading={loading} size="lg" fullWidth>Add to Cart</Button>
     </div>
