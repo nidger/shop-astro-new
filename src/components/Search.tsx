@@ -84,14 +84,16 @@ export function Search() {
             {results.length > 0 && (
               <CommandGroup heading="Products">
                 {results.map(({ item }) => (
-                  <CommandItem
-                    key={item.id}
-                    value={item.title}
-                    onSelect={() => handleSelect(`/products/${item.slug}`)}
-                  >
-                    <img src={item.image.src} alt={item.title} className="h-8 w-8 mr-4 rounded-sm" />
-                    <span>{item.title}</span>
-                  </CommandItem>
+                  <a href={`/products/${item.slug}`} onClick={() => setOpen(false)}>
+                    <CommandItem
+                      key={item.id}
+                      value={item.title}
+                      className="cursor-pointer"
+                    >
+                      <img src={item.image.src} alt={item.title} className="h-8 w-8 mr-4 rounded-sm" />
+                      <span>{item.title}</span>
+                    </CommandItem>
+                  </a>
                 ))}
               </CommandGroup>
             )}
