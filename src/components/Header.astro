@@ -2,6 +2,7 @@
 import ShoppingCartButton from './ShoppingCartButton.tsx';
 import { DesktopNavigation } from './DesktopNavigation.tsx';
 import { MobileNavigation } from './MobileNavigation.tsx';
+import { Search } from './Search.tsx';
 ---
 <header class="flex items-center justify-between px-6 py-4 bg-background">
   <!-- Left: Logo -->
@@ -20,6 +21,7 @@ import { MobileNavigation } from './MobileNavigation.tsx';
 
   <!-- Right: Actions -->
   <div class="flex-1 flex justify-end items-center gap-2">
+    <Search client:load />
     <ShoppingCartButton client:load />
     <div class="md:hidden">
       <MobileNavigation client:load />

@@ -2,10 +2,21 @@ import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/stores/cartStore";
 import { CartSheet } from "./CartSheet";
+import { useState, useEffect } from 'react';
 
 const ShoppingCartButton = () => {
   const items = useCartStore((state) => state.items);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
   const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
+
+  if (!isHydrated) {
+    return null; // Or a loading skeleton
+  }
 
   return (
     <CartSheet>

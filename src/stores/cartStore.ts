@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import type { allProducts } from '../data/products';
 
 type Product = (typeof allProducts)[0];
@@ -60,6 +60,7 @@ export const useCartStore = create<CartState>()(
     }),
     {
       name: 'shopping-cart-storage',
+      storage: createJSONStorage(() => sessionStorage),
     }
   )
 );
