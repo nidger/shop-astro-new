@@ -33,7 +33,7 @@ const recommendedProducts = allProducts
   .slice(0, 4);
 ---
 <Layout>
-  <main class="max-w-6xl mx-auto px-6 py-8">
+  <main class="max-w-6xl mx-auto px-6 pt-8 pb-16 bg-background">
     <div class="mb-4 md:hidden">
       <Breadcrumb links={breadcrumbLinks} />
     </div>
@@ -80,7 +80,7 @@ const recommendedProducts = allProducts
 
   <!-- This section is now outside the narrow main container -->
   {recommendedProducts.length > 0 && (
-    <div class="py-16">
+    <div class="pt-4 pb-16 bg-section-bg">
       <ProductSection 
         title="You might also like"
         products={recommendedProducts}
