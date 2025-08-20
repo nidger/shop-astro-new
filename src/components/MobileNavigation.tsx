@@ -29,7 +29,7 @@ export function MobileNavigation() {
           <span className="sr-only">Open menu</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="left">
+      <SheetContent side="right">
         <div className="flex flex-col gap-4 py-8">
           <a href="/" className="text-lg font-medium" onClick={() => setIsOpen(false)}>
             Home
