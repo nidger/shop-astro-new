@@ -1,4 +1,5 @@
 import * as React from "react";
+import { navigate } from "astro:transitions/client";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -61,7 +62,7 @@ export function Search() {
   }, [query, fuse]);
 
   const handleSelect = (path: string) => {
-    window.location.href = path;
+    navigate(path);
     setOpen(false);
   };
 
@@ -84,16 +85,15 @@ export function Search() {
             {results.length > 0 && (
               <CommandGroup heading="Products">
                 {results.map(({ item }) => (
-                  <a href={`/products/${item.slug}`} onClick={() => setOpen(false)}>
-                    <CommandItem
-                      key={item.id}
-                      value={item.title}
-                      className="cursor-pointer"
-                    >
-                      <img src={item.image.src} alt={item.title} className="h-8 w-8 mr-4 rounded-sm" />
-                      <span>{item.title}</span>
-                    </CommandItem>
-                  </a>
+                  <CommandItem
+                    key={item.id}
+                    value={item.title}
+                    className="cursor-pointer"
+                    onSelect={() => handleSelect(`/products/${item.slug}`)}
+                  >
+                    <img src={item.image.src} alt={item.title} className="h-8 w-8 mr-4 rounded-sm" />
+                    <span>{item.title}</span>
+                  </CommandItem>
                 ))}
               </CommandGroup>
             )}
