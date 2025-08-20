@@ -1,0 +1,14 @@
+---
+// src/components/Section.astro
+const { variant = 'full', class: className, ...props } = Astro.props;
+
+const containerClasses = {
+  full: 'px-6',
+  narrow: 'max-w-6xl mx-auto px-6'
+};
+---
+<section class:list={["py-16", className]} {...props}>
+  <div class:list={[containerClasses[variant]]}>
+    <slot />
+  </div>
+</section>
