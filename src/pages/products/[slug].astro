@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import ProductCarousel from '../../components/ProductCarousel.astro';
 import Layout from '../../layouts/Layout.astro';
 import { ProductPurchase } from '../../components/ProductPurchase.tsx';
 import Breadcrumb from '../../components/Breadcrumb.astro';
@@ -39,16 +39,8 @@ const recommendedProducts = allProducts
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-8 lg:gap-x-16">
       <!-- Left Column: Image -->
-      <div class="bg-muted rounded-lg aspect-square xl:col-span-3">
-        <Image 
-          src={product.images[0].src} 
-          alt={product.images[0].alt}
-          widths={[400, 800, 1200]}
-          sizes="(max-width: 768px) 400px, (max-width: 1200px) 800px, 1200px"
-          format="webp"
-          class="w-full h-full object-cover rounded-lg"
-          transition:name={`product-image-${product.id}`}
-        />
+      <div class="xl:col-span-3">
+        <ProductCarousel images={product.images} id={product.id} />
       </div>
       <!-- Right Column: Details -->
       <div class="py-4 xl:col-span-2">
