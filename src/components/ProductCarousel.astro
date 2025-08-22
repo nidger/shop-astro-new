@@ -9,6 +9,7 @@ const { images, id } = Astro.props;
       aria-live="off"
       class="flex w-full overflow-x-auto rounded-lg border bg-muted snap-x snap-mandatory pointer-fine:overflow-hidden"
       data-astro-transition-scope={`product-image-${id}`}
+      transition:name={`product-image-${id}`}
     >
       {images.map((image, index) => (
         <div
@@ -25,7 +26,6 @@ const { images, id } = Astro.props;
             loading={index === 0 ? 'eager' : 'lazy'}
             decoding="async"
             class="w-full h-full object-cover"
-            transition:name={`product-image-${id}-${index}`}
           />
         </div>
       ))}
