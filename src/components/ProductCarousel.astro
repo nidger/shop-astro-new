@@ -31,52 +31,54 @@ const { images, id } = Astro.props;
       ))}
     </div>
 
-    <div class="flex gap-2 justify-center items-center">
-      <button
-        id="product-carousel-prev"
-        aria-controls="product-carousel-images"
-        aria-label="Previous image"
-        class="p-2 rounded-md border bg-card text-card-foreground hover:bg-accent disabled:opacity-50"
-      >
-        <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" width="20">
-          <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414L7.828 11Z"></path>
-        </svg>
-      </button>
+    {images.length > 1 && (
+      <div class="flex gap-2 justify-center items-center">
+        <button
+          id="product-carousel-prev"
+          aria-controls="product-carousel-images"
+          aria-label="Previous image"
+          class="p-2 rounded-md border bg-card text-card-foreground hover:bg-accent disabled:opacity-50"
+        >
+          <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" width="20">
+            <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414L7.828 11Z"></path>
+          </svg>
+        </button>
 
-      <div role="tablist" aria-label="Image thumbnails" class="flex gap-2">
-        {images.map((image, index) => (
-          <button
-            type="button"
-            role="tab"
-            aria-label={`Image ${index + 1}`}
-            aria-selected={index === 0 ? 'true' : 'false'}
-            aria-controls={`product-carousel-image-${index}`}
-            class="overflow-hidden w-16 h-16 rounded-md bg-muted border aria-selected:ring-2 aria-selected:ring-ring"
-          >
-            <Image
-              src={image.src}
-              alt={`Thumbnail for product image ${index + 1}`}
-              loading="lazy"
-              width="64"
-              height="64"
-              decoding="async"
-              class="w-full h-full object-cover"
-            />
-          </button>
-        ))}
+        <div role="tablist" aria-label="Image thumbnails" class="flex gap-2">
+          {images.map((image, index) => (
+            <button
+              type="button"
+              role="tab"
+              aria-label={`Image ${index + 1}`}
+              aria-selected={index === 0 ? 'true' : 'false'}
+              aria-controls={`product-carousel-image-${index}`}
+              class="overflow-hidden w-16 h-16 rounded-md bg-muted border aria-selected:ring-2 aria-selected:ring-ring"
+            >
+              <Image
+                src={image.src}
+                alt={`Thumbnail for product image ${index + 1}`}
+                loading="lazy"
+                width="64"
+                height="64"
+                decoding="async"
+                class="w-full h-full object-cover"
+              />
+            </button>
+          ))}
+        </div>
+
+        <button
+          id="product-carousel-next"
+          aria-controls="product-carousel-images"
+          aria-label="Next image"
+          class="p-2 rounded-md border bg-card text-card-foreground hover:bg-accent disabled:opacity-50"
+        >
+          <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" width="20" class="rotate-180">
+            <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414L7.828 11Z"></path>
+          </svg>
+        </button>
       </div>
-
-      <button
-        id="product-carousel-next"
-        aria-controls="product-carousel-images"
-        aria-label="Next image"
-        class="p-2 rounded-md border bg-card text-card-foreground hover:bg-accent disabled:opacity-50"
-      >
-        <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" width="20" class="rotate-180">
-          <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414L7.828 11Z"></path>
-        </svg>
-      </button>
-    </div>
+    )}
   </div>
 </product-carousel>
 
@@ -92,31 +94,33 @@ const { images, id } = Astro.props;
     constructor() {
       super();
 
-      this.#e = [...this.querySelectorAll('button[role="tab"]')];
+      if (this.#t.length > 1) {
+        this.#e = [...this.querySelectorAll('button[role="tab"]')];
 
-      for (const i of this.#e) {
-        i.addEventListener("click", this.#l);
-        i.addEventListener("keydown", this.#f);
-        i.addEventListener("focus", this.#o);
-        i.addEventListener("blur", this.#a);
-      }
+        for (const i of this.#e) {
+          i.addEventListener("click", this.#l);
+          i.addEventListener("keydown", this.#f);
+          i.addEventListener("focus", this.#o);
+          i.addEventListener("blur", this.#a);
+        }
 
-      const t = this.querySelector("#product-carousel-prev");
-      t?.addEventListener("click", () => this.#n(this.#h()));
-      t?.addEventListener("focus", this.#o);
-      t?.addEventListener("blur", this.#a);
+        const t = this.querySelector("#product-carousel-prev");
+        t?.addEventListener("click", () => this.#n(this.#h()));
+        t?.addEventListener("focus", this.#o);
+        t?.addEventListener("blur", this.#a);
 
-      const e = this.querySelector("#product-carousel-next");
-      e?.addEventListener("click", () => this.#n(this.#c()));
-      e?.addEventListener("focus", this.#o);
-      e?.addEventListener("blur", this.#a);
+        const e = this.querySelector("#product-carousel-next");
+        e?.addEventListener("click", () => this.#n(this.#c()));
+        e?.addEventListener("focus", this.#o);
+        e?.addEventListener("blur", this.#a);
 
-      const s = new IntersectionObserver(this.#b, {
-        root: this.#s,
-        threshold: 0.5,
-      });
-      for (const i of this.#t) {
-        s.observe(i);
+        const s = new IntersectionObserver(this.#b, {
+          root: this.#s,
+          threshold: 0.5,
+        });
+        for (const i of this.#t) {
+          s.observe(i);
+        }
       }
     }
 
