@@ -41,8 +41,8 @@ const recommendedProducts = allProducts
       <!-- Left Column: Image -->
       <div class="bg-muted rounded-lg aspect-square xl:col-span-3">
         <Image 
-          src={product.image} 
-          alt={product.title}
+          src={product.images[0].src} 
+          alt={product.images[0].alt}
           widths={[400, 800, 1200]}
           sizes="(max-width: 768px) 400px, (max-width: 1200px) 800px, 1200px"
           format="webp"
