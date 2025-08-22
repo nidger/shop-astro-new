@@ -60,7 +60,7 @@ export function CartSheet({ children }: { children: React.ReactNode }) {
                   {items.map((item) => (
                     <div key={item.product.id} className="flex items-start justify-between">
                       <div className="flex items-center gap-4">
-                        <img src={item.product.image.src} alt={item.product.title} width={64} height={64} className="rounded-md" />
+                        <img src={item.product.images[0].src.src} alt={item.product.title} className="h-16 w-16 object-cover rounded-md" />
                         <div>
                           <p className="font-medium">{item.product.title}</p>
                           <p className="text-sm text-muted-foreground">{item.product.price}</p>

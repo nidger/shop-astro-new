@@ -33,11 +33,9 @@ export function DesktopNavigation() {
     <NavigationMenu className="z-50">
       <NavigationMenuList>
         <NavigationMenuItem>
-          <a href="/">
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Home
-            </NavigationMenuLink>
-          </a>
+          <NavigationMenuLink href="/" className={navigationMenuTriggerStyle()}>
+            Home
+          </NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuTrigger>Collections</NavigationMenuTrigger>
@@ -56,11 +54,9 @@ export function DesktopNavigation() {
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <a href="/#contest-section">
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Contest
-            </NavigationMenuLink>
-          </a>
+          <NavigationMenuLink href="/#contest-section" className={navigationMenuTriggerStyle()}>
+            Contest
+          </NavigationMenuLink>
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
@@ -74,7 +70,7 @@ const ListItem = React.forwardRef<
   return (
     <li>
       <NavigationMenuLink asChild>
-        <a
+        <div
           ref={ref}
           className={cn(
             "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-card-hover focus:bg-card-hover",
@@ -86,7 +82,7 @@ const ListItem = React.forwardRef<
           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
             {children}
           </p>
-        </a>
+        </div>
       </NavigationMenuLink>
     </li>
   );
