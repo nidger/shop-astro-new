@@ -17,7 +17,9 @@ export function CartSheet({ children }: { children: React.ReactNode }) {
   const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
 
   const totalPrice = items.reduce((acc, item) => {
-    const price = parseFloat(item.product.price.substring(1));
+    // Add a check to ensure price is a valid string before parsing
+    const priceString = item.product.price || '$0';
+    const price = parseFloat(priceString.substring(1));
     return acc + price * item.quantity;
   }, 0);
 
@@ -57,23 +59,37 @@ export function CartSheet({ children }: { children: React.ReactNode }) {
             <ScrollArea className="flex-grow pr-4">
               {items.length > 0 ? (
                 <div className="space-y-4">
-                  {items.map((item) => (
-                    <div key={item.product.id} className="flex items-start justify-between">
-                      <div className="flex items-center gap-4">
-                        <img src={item.product.images[0].src.src} alt={item.product.title} className="h-16 w-16 object-cover rounded-md" />
-                        <div>
-                          <p className="font-medium">{item.product.title}</p>
-                          <p className="text-sm text-muted-foreground">{item.product.price}</p>
-                          <div className="flex items-center gap-2 mt-2">
-                            <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => decreaseQuantity(item.product.id)} icon={<Minus className="h-4 w-4" />} aria-label="Decrease quantity" />
-                            <span>{item.quantity}</span>
-                            <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => increaseQuantity(item.product.id)} icon={<Plus className="h-4 w-4" />} aria-label="Increase quantity" />
+                  {items.map((item) => {
+                    // **THE FIX IS HERE**
+                    // Safely get the image source. If it doesn't exist, use a placeholder.
+                    const imageUrl = item.product.images && item.product.images.length > 0
+                      ? item.product.images[0].src.src
+                      : '/placeholder.svg'; // You can use any placeholder image URL
+
+                    return (
+                      <div key={item.product.id} className="flex items-start justify-between">
+                        <div className="flex items-center gap-4">
+                          <img src={imageUrl} alt={item.product.title} className="h-16 w-16 object-cover rounded-md bg-muted" />
+                          <div>
+                            <p className="font-medium">{item.product.title}</p>
+                            <p className="text-sm text-muted-foreground">{item.product.price}</p>
+                            <div className="flex items-center gap-2 mt-2">
+                              <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => decreaseQuantity(item.product.id)} aria-label="Decrease quantity">
+                                <Minus className="h-4 w-4" />
+                              </Button>
+                              <span>{item.quantity}</span>
+                              <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => increaseQuantity(item.product.id)} aria-label="Increase quantity">
+                                <Plus className="h-4 w-4" />
+                              </Button>
+                            </div>
                           </div>
                         </div>
+                        <Button variant="ghost" size="icon" onClick={() => removeFromCart(item.product.id)} aria-label="Remove item">
+                           <Trash2 className="h-4 w-4" />
+                        </Button>
                       </div>
-                      <Button variant="ghost" size="icon" onClick={() => removeFromCart(item.product.id)} icon={<Trash2 className="h-4 w-4" />} aria-label="Remove item" />
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               ) : (
                 <p className="text-center text-muted-foreground py-8">Your cart is empty.</p>
@@ -86,8 +102,8 @@ export function CartSheet({ children }: { children: React.ReactNode }) {
                     <span>Total</span>
                     <span>${totalPrice.toFixed(2)}</span>
                   </div>
-                  <Button onClick={handleCheckout} loading={loading} fullWidth size="lg">
-                    Checkout
+                  <Button onClick={handleCheckout} disabled={loading} fullWidth size="lg">
+                    {loading ? 'Processing...' : 'Checkout'}
                   </Button>
                   <Button variant="outline" fullWidth onClick={() => clearCart()} size="lg">
                     Clear Cart
