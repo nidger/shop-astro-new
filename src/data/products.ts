@@ -7,7 +7,17 @@ import blueHoodie from '../assets/blue-hoodie.jpg';
 import stickerPack from '../assets/sticker-pack.jpg';
 import astroCap from '../assets/astro-cap.jpg';
 
-export const allProducts = [
+export interface Product {
+  id: string;
+  slug: string;
+  collectionId: string;
+  title: string;
+  price: string;
+  images: { src: any; alt: string }[];
+  colors?: string[];
+}
+
+export const allProducts: Product[] = [
   { id: "1", slug: "embroidered-astro-bucket-hat", collectionId: "summer", title: "Embroidered Astro Bucket Hat", price: "$30.00", colors: ["#F5F5DC", "#FFB6C1", "#F0E68C"], images: [{src: bucketHat, alt: "Embroidered Astro Bucket Hat"}, {src: beachTowel, alt: "Embroidered Astro Bucket Hat"}, {src: tiedyeShirt, alt: "Embroidered Astro Bucket Hat"}] },
   { id: "2", slug: "astro-striped-beach-towel", collectionId: "summer", title: "Astro Striped Beach Towel", price: "$35.00", images: [{src: beachTowel, alt: "Astro Striped Beach Towel"}] },
   { id: "3", slug: "oversized-interplanetary-astro-t-shirt", collectionId: "summer", title: "Oversized Interplanetary Astro T-Shirt", price: "$34.00", images: [{src: tiedyeShirt, alt: "Oversized Interplanetary Astro T-Shirt"}] },
@@ -23,7 +33,7 @@ export const allProducts = [
 ];
 
 export const collections = [
-    { id: "summer", title: "Summer 2025", image: allProducts.find(p => p.id === '1').images[0].src },
-    { id: "apparel", title: "Apparel", image: allProducts.find(p => p.id === '5').images[0].src },
-    { id: "stickers", title: "Stickers", image: allProducts.find(p => p.id === '7').images[0].src }
+    { id: "summer", title: "Summer 2025", image: allProducts.find(p => p.id === '1')!.images[0].src },
+    { id: "apparel", title: "Apparel", image: allProducts.find(p => p.id === '5')!.images[0].src },
+    { id: "stickers", title: "Stickers", image: allProducts.find(p => p.id === '7')!.images[0].src }
 ];
