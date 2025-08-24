@@ -1,224 +1,181 @@
 ---
 import { Image } from 'astro:assets';
 const { images, id } = Astro.props;
+
+// We only need the first image for the initial server render.
+const firstImage = images && images.length > 0 ? images[0] : null;
 ---
-<product-carousel aria-roledescription="carousel" aria-label="Product images">
-  <div class="grid gap-4">
+
+{firstImage ? (
+  <product-carousel 
+    class="grid gap-4" 
+    data-images={JSON.stringify(images)} 
+    data-id={id}
+  >
     <div
       id="product-carousel-images"
-      aria-live="off"
       class="flex w-full overflow-x-auto rounded-lg border bg-muted snap-x snap-mandatory pointer-fine:overflow-hidden"
-      data-astro-transition-scope={`product-image-${id}`}
-      transition:name={`product-image-${id}`}
     >
-      {images.map((image, index) => (
-        <div
-          id={`product-carousel-image-${index}`}
-          class="product-carousel-image w-full aspect-square shrink-0 snap-start"
-          role="tabpanel"
-          aria-roledescription="slide"
-          aria-label={`${index + 1} of ${images.length}`}
-          aria-hidden={index === 0 ? 'false' : 'true'}
-        >
-          <Image
-            src={image.src}
-            alt={image.alt}
-            loading={index === 0 ? 'eager' : 'lazy'}
-            decoding="async"
-            class="w-full h-full object-cover"
-          />
-        </div>
-      ))}
+      {/* SERVER-RENDERED PART:
+        Only the first image is rendered initially. This is the clean, static
+        target for our View Transition. No other images exist in the DOM to flash.
+      */}
+      <div class="product-carousel-image w-full aspect-square shrink-0 snap-start">
+        <Image
+          src={firstImage.src}
+          alt={firstImage.alt}
+          loading="eager"
+          decoding="async"
+          class="w-full h-full object-cover"
+          transition:name={`product-image-${id}`}
+        />
+      </div>
     </div>
 
-    {images.length > 1 && (
-      <div class="flex gap-2 justify-center items-center">
-        <button
-          id="product-carousel-prev"
-          aria-controls="product-carousel-images"
-          aria-label="Previous image"
-          class="p-2 rounded-md border bg-card text-card-foreground hover:bg-accent disabled:opacity-50"
-        >
-          <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" width="20">
-            <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414L7.828 11Z"></path>
-          </svg>
-        </button>
+    {/* This container will be populated by the client-side script below */}
+    <div id="carousel-controls-placeholder"></div>
 
-        <div role="tablist" aria-label="Image thumbnails" class="flex gap-2">
-          {images.map((image, index) => (
-            <button
-              type="button"
-              role="tab"
-              aria-label={`Image ${index + 1}`}
-              aria-selected={index === 0 ? 'true' : 'false'}
-              aria-controls={`product-carousel-image-${index}`}
-              class="overflow-hidden w-16 h-16 rounded-md bg-muted border aria-selected:ring-2 aria-selected:ring-ring"
-            >
-              <Image
-                src={image.src}
-                alt={`Thumbnail for product image ${index + 1}`}
-                loading="lazy"
-                width="64"
-                height="64"
-                decoding="async"
-                class="w-full h-full object-cover"
-              />
-            </button>
-          ))}
-        </div>
-
-        <button
-          id="product-carousel-next"
-          aria-controls="product-carousel-images"
-          aria-label="Next image"
-          class="p-2 rounded-md border bg-card text-card-foreground hover:bg-accent disabled:opacity-50"
-        >
-          <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" width="20" class="rotate-180">
-            <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414L7.828 11Z"></path>
-          </svg>
-        </button>
-      </div>
-    )}
+  </product-carousel>
+) : (
+  <div class="aspect-square bg-muted rounded-lg flex items-center justify-center">
+    <p class="text-muted-foreground">No image available</p>
   </div>
-</product-carousel>
+)}
 
 <script type="module">
   customElements.define("product-carousel", class extends HTMLElement {
-    #s = this.querySelector("#product-carousel-images");
-    #e;
-    #t = [...this.querySelectorAll(".product-carousel-image")];
-    #u = window.matchMedia("(prefers-reduced-motion: reduce)");
-    #i = 0;
-    #r;
-
     constructor() {
       super();
 
-      if (this.#t.length > 1) {
-        this.#e = [...this.querySelectorAll('button[role="tab"]')];
-
-        for (const i of this.#e) {
-          i.addEventListener("click", this.#l);
-          i.addEventListener("keydown", this.#f);
-          i.addEventListener("focus", this.#o);
-          i.addEventListener("blur", this.#a);
-        }
-
-        const t = this.querySelector("#product-carousel-prev");
-        t?.addEventListener("click", () => this.#n(this.#h()));
-        t?.addEventListener("focus", this.#o);
-        t?.addEventListener("blur", this.#a);
-
-        const e = this.querySelector("#product-carousel-next");
-        e?.addEventListener("click", () => this.#n(this.#c()));
-        e?.addEventListener("focus", this.#o);
-        e?.addEventListener("blur", this.#a);
-
-        const s = new IntersectionObserver(this.#b, {
-          root: this.#s,
-          threshold: 0.5,
-        });
-        for (const i of this.#t) {
-          s.observe(i);
-        }
+      const imagesData = JSON.parse(this.dataset.images);
+      const productId = this.dataset.id;
+      
+      // If there are no images or only one, do nothing.
+      if (!imagesData || imagesData.length <= 1) {
+        return;
       }
+
+      // CLIENT-SIDE PART:
+      // This script runs AFTER the page transition is complete.
+      // It now builds the rest of the carousel and injects it into the page.
+      this.buildCarousel(imagesData);
+      this.attachEventListeners();
     }
 
-    #h() {
-      let t = this.#i - 1;
-      return t < 0 ? this.#t.length - 1 : t;
-    }
+    buildCarousel(images) {
+      const controlsPlaceholder = this.querySelector('#carousel-controls-placeholder');
+      const imageViewer = this.querySelector('#product-carousel-images');
 
-    #c() {
-      let t = this.#i + 1;
-      return t >= this.#t.length ? 0 : t;
-    }
-
-    #n(t) {
-      this.#i = t;
-      for (let e = 0; e < this.#t.length; e++) {
-        this.#t[e].setAttribute("aria-hidden", e !== t ? "true" : "false");
-      }
-      this.#s.scrollTo({
-        left: this.#s.offsetWidth * t,
-        behavior: this.#v(),
+      // 1. Create and add the other image slides to the viewer
+      images.slice(1).forEach((image, index) => {
+        const slide = document.createElement('div');
+        slide.className = 'product-carousel-image w-full aspect-square shrink-0 snap-start';
+        // The actual index is `index + 1` because we sliced the array
+        slide.id = `product-carousel-image-${index + 1}`; 
+        
+        const img = document.createElement('img');
+        img.src = image.src.src; // Note: accessing .src.src for processed images
+        img.alt = image.alt;
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        img.className = 'w-full h-full object-cover';
+        
+        slide.appendChild(img);
+        imageViewer.appendChild(slide);
       });
+
+      // 2. Build the HTML for the thumbnails and navigation buttons
+      const controlsHTML = `
+        <div class="flex gap-2 justify-center items-center">
+          <button id="product-carousel-prev" aria-label="Previous image" class="p-2 rounded-md border bg-card text-card-foreground hover:bg-accent disabled:opacity-50">
+            <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" width="20">
+              <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414L7.828 11Z"></path>
+            </svg>
+          </button>
+          <div role="tablist" aria-label="Image thumbnails" class="flex gap-2">
+            ${images.map((image, index) => `
+              <button
+                type="button"
+                role="tab"
+                aria-label="Image ${index + 1}"
+                aria-selected="${index === 0 ? 'true' : 'false'}"
+                class="overflow-hidden w-16 h-16 rounded-md bg-muted border ${index === 0 ? 'ring-2 ring-ring' : ''}"
+              >
+                <img
+                  src="${image.src.src}"
+                  alt="Thumbnail for product image ${index + 1}"
+                  loading="lazy"
+                  width="64"
+                  height="64"
+                  decoding="async"
+                  class="w-full h-full object-cover"
+                />
+              </button>
+            `).join('')}
+          </div>
+          <button id="product-carousel-next" aria-label="Next image" class="p-2 rounded-md border bg-card text-card-foreground hover:bg-accent disabled:opacity-50">
+            <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" width="20" class="rotate-180">
+              <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414L7.828 11Z"></path>
+            </svg>
+          </button>
+        </div>
+      `;
+
+      // 3. Inject the controls HTML into the placeholder
+      controlsPlaceholder.innerHTML = controlsHTML;
     }
 
-    #d() {
-      for (const e of this.#e) {
-        e.setAttribute("aria-selected", "false");
-        e.classList.remove("aria-selected:ring-2", "aria-selected:ring-ring");
-      }
-      const t = this.#e[this.#i];
-      t.setAttribute("aria-selected", "true");
-      t.classList.add("aria-selected:ring-2", "aria-selected:ring-ring");
-    }
+    attachEventListeners() {
+      // Logic from the original script, slightly adapted
+      const scrollContainer = this.querySelector("#product-carousel-images");
+      const slides = [...this.querySelectorAll(".product-carousel-image")];
+      const tabs = [...this.querySelectorAll('button[role="tab"]')];
+      let currentIndex = 0;
 
-    #l = (t) => {
-      if (!(t.currentTarget instanceof HTMLButtonElement)) return;
-      t.preventDefault();
-      const e = this.#e.indexOf(t.currentTarget);
-      this.#r = e;
-      this.#n(e);
-    };
+      const updateUI = () => {
+        tabs.forEach((tab, index) => {
+          const isSelected = index === currentIndex;
+          tab.setAttribute('aria-selected', isSelected);
+          tab.classList.toggle('ring-2', isSelected);
+          tab.classList.toggle('ring-ring', isSelected);
+        });
+      };
 
-    #f = (t) => {
-      let e;
-      switch (t.key) {
-        case "ArrowRight": {
-          e = this.#c();
-          break;
-        }
-        case "ArrowLeft": {
-          e = this.#h();
-          break; 
-        }
-        case "Home": {
-          e = 0;
-          break;
-        }
-        case "End": {
-          e = this.#t.length - 1;
-          break;
-        }
-      }
-      if (e !== void 0) {
-        t.preventDefault();
-        this.#r = e;
-        this.#n(e);
-      }
-    };
+      const scrollToSlide = (index) => {
+        currentIndex = index;
+        scrollContainer.scrollTo({
+          left: scrollContainer.offsetWidth * index,
+          behavior: 'smooth',
+        });
+        updateUI();
+      };
+      
+      tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => scrollToSlide(index));
+      });
 
-    #b = (t) => {
-      for (const e of t) {
-        if (!e.isIntersecting || !(e.target instanceof HTMLDivElement)) continue;
-        const s = this.#t.indexOf(e.target);
-        this.#i = s;
-        this.#d();
-        if (this.#r !== void 0) {
-          this.#g(s);
-          if (this.#r === s) {
-            this.#r = void 0;
+      this.querySelector('#product-carousel-prev').addEventListener('click', () => {
+        const newIndex = currentIndex === 0 ? slides.length - 1 : currentIndex - 1;
+        scrollToSlide(newIndex);
+      });
+
+      this.querySelector('#product-carousel-next').addEventListener('click', () => {
+        const newIndex = currentIndex === slides.length - 1 ? 0 : currentIndex + 1;
+        scrollToSlide(newIndex);
+      });
+
+      // Use IntersectionObserver to update active tab on scroll
+      const observer = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            const slideIndex = slides.indexOf(entry.target);
+            currentIndex = slideIndex;
+            updateUI();
           }
         }
-      }
-    };
+      }, { root: scrollContainer, threshold: 0.5 });
 
-    #g(t) {
-      this.#e[t].focus();
-    }
-
-    #o = () => {
-      this.#s.setAttribute("aria-live", "polite");
-    };
-
-    #a = () => {
-      this.#s.setAttribute("aria-live", "off");
-    };
-
-    #v() {
-      return this.#u.matches ? "auto" : "smooth";
+      slides.forEach(slide => observer.observe(slide));
     }
   });
 </script>

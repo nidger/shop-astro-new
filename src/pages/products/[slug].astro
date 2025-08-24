@@ -1,10 +1,10 @@
 ---
-import ProductCarousel from '../../components/ProductCarousel.astro';
 import Layout from '../../layouts/Layout.astro';
 import { ProductPurchase } from '../../components/ProductPurchase.tsx';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import ProductSection from '../../components/ProductSection.astro';
 import { allProducts, collections } from '../../data/products.ts';
+import ProductCarousel from '../../components/ProductCarousel.astro';
 
 export function getStaticPaths() {
   return allProducts.map((product) => ({
@@ -24,10 +24,9 @@ const productCollection = collections.find(c => c.id === product.collectionId);
 const breadcrumbLinks = [
   { text: 'Home', href: '/' },
   { text: 'Collections', href: '/collections' },
-  { text: productCollection.title, href: `/collection/${productCollection.id}` }
+  { text: productCollection?.title, href: `/collection/${productCollection?.id}` }
 ];
 
-// Logic for recommended products
 const recommendedProducts = allProducts
   .filter(p => p.collectionId === product.collectionId && p.id !== product.id)
   .slice(0, 4);
@@ -38,11 +37,10 @@ const recommendedProducts = allProducts
       <Breadcrumb links={breadcrumbLinks} />
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-8 lg:gap-x-16">
-      <!-- Left Column: Image -->
       <div class="xl:col-span-3">
         <ProductCarousel images={product.images} id={product.id} />
       </div>
-      <!-- Right Column: Details -->
+      
       <div class="py-4 xl:col-span-2">
         <div class="mb-4 hidden md:block">
           <Breadcrumb links={breadcrumbLinks} />
@@ -70,7 +68,6 @@ const recommendedProducts = allProducts
     </div>
   </main>
 
-  <!-- This section is now outside the narrow main container -->
   {recommendedProducts.length > 0 && (
     <div class="pt-4 pb-16 bg-section-bg">
       <ProductSection 
