@@ -2,7 +2,7 @@
 import { Image } from 'astro:assets';
 const { images, id } = Astro.props;
 
-// We only need the first image for the initial server render.
+
 const firstImage = images && images.length > 0 ? images[0] : null;
 ---
 
@@ -16,10 +16,7 @@ const firstImage = images && images.length > 0 ? images[0] : null;
       id="product-carousel-images"
       class="flex w-full overflow-x-auto rounded-lg border bg-muted snap-x snap-mandatory pointer-fine:overflow-hidden"
     >
-      {/* SERVER-RENDERED PART:
-        Only the first image is rendered initially. This is the clean, static
-        target for our View Transition. No other images exist in the DOM to flash.
-      */}
+      
       <div class="product-carousel-image w-full aspect-square shrink-0 snap-start">
         <Image
           src={firstImage.src}
@@ -32,7 +29,7 @@ const firstImage = images && images.length > 0 ? images[0] : null;
       </div>
     </div>
 
-    {/* This container will be populated by the client-side script below */}
+    
     <div id="carousel-controls-placeholder"></div>
 
   </product-carousel>
@@ -55,9 +52,7 @@ const firstImage = images && images.length > 0 ? images[0] : null;
         return;
       }
 
-      // CLIENT-SIDE PART:
-      // This script runs AFTER the page transition is complete.
-      // It now builds the rest of the carousel and injects it into the page.
+      
       this.buildCarousel(imagesData);
       this.attachEventListeners();
     }
@@ -66,15 +61,15 @@ const firstImage = images && images.length > 0 ? images[0] : null;
       const controlsPlaceholder = this.querySelector('#carousel-controls-placeholder');
       const imageViewer = this.querySelector('#product-carousel-images');
 
-      // 1. Create and add the other image slides to the viewer
+      
       images.slice(1).forEach((image, index) => {
         const slide = document.createElement('div');
         slide.className = 'product-carousel-image w-full aspect-square shrink-0 snap-start';
-        // The actual index is `index + 1` because we sliced the array
+        
         slide.id = `product-carousel-image-${index + 1}`; 
         
         const img = document.createElement('img');
-        img.src = image.src.src; // Note: accessing .src.src for processed images
+        img.src = image.src.src; 
         img.alt = image.alt;
         img.loading = 'lazy';
         img.decoding = 'async';
@@ -84,7 +79,7 @@ const firstImage = images && images.length > 0 ? images[0] : null;
         imageViewer.appendChild(slide);
       });
 
-      // 2. Build the HTML for the thumbnails and navigation buttons
+      
       const controlsHTML = `
         <div class="flex gap-2 justify-center items-center">
           <button id="product-carousel-prev" aria-label="Previous image" class="p-2 rounded-md border bg-card text-card-foreground hover:bg-accent disabled:opacity-50">
@@ -121,12 +116,12 @@ const firstImage = images && images.length > 0 ? images[0] : null;
         </div>
       `;
 
-      // 3. Inject the controls HTML into the placeholder
+      
       controlsPlaceholder.innerHTML = controlsHTML;
     }
 
     attachEventListeners() {
-      // Logic from the original script, slightly adapted
+      
       const scrollContainer = this.querySelector("#product-carousel-images");
       const slides = [...this.querySelectorAll(".product-carousel-image")];
       const tabs = [...this.querySelectorAll('button[role="tab"]')];
@@ -164,7 +159,7 @@ const firstImage = images && images.length > 0 ? images[0] : null;
         scrollToSlide(newIndex);
       });
 
-      // Use IntersectionObserver to update active tab on scroll
+      
       const observer = new IntersectionObserver((entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) {
