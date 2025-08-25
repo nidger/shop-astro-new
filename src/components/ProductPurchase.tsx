@@ -25,9 +25,10 @@ export function ProductPurchase({ product }: { product: Product }) {
     <div className="flex flex-col gap-6">
       {product.sizes && (
         <div className="flex flex-col gap-2">
-          <p className="text-sm font-medium text-muted-foreground">Size</p>
+          <p id="size-group-label" className="text-sm font-medium text-muted-foreground">Size</p>
           <ToggleGroup 
             type="single" 
+            aria-labelledby="size-group-label"
             onValueChange={(value) => setSelectedSize(value)}
             className="justify-start gap-x-2"
           >
