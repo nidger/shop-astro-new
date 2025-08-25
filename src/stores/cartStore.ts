@@ -5,16 +5,18 @@ import type { allProducts } from '../data/products';
 type Product = (typeof allProducts)[0];
 
 export interface CartItem {
+  id: string; // Unique identifier for the cart item, e.g., "1-M"
   product: Product;
   quantity: number;
+  size?: string;
 }
 
 export interface CartState {
   items: CartItem[];
-  addToCart: (product: Product, quantity?: number) => void;
-  removeFromCart: (productId: string) => void;
-  increaseQuantity: (productId: string) => void;
-  decreaseQuantity: (productId: string) => void;
+  addToCart: (product: Product, quantity?: number, size?: string) => void;
+  removeFromCart: (cartItemId: string) => void;
+  increaseQuantity: (cartItemId: string) => void;
+  decreaseQuantity: (cartItemId: string) => void;
   clearCart: () => void;
 }
 
@@ -22,36 +24,40 @@ export const useCartStore = create<CartState>()(
   persist(
     (set) => ({
       items: [],
-      addToCart: (product, quantity = 1) =>
+      addToCart: (product, quantity = 1, size) =>
         set((state) => {
-          const existingItem = state.items.find((item) => item.product.id === product.id);
+          // Create a unique ID for the cart item based on product ID and size
+          const cartItemId = size ? `${product.id}-${size}` : product.id;
+          const existingItem = state.items.find((item) => item.id === cartItemId);
+
           if (existingItem) {
             const updatedItems = state.items.map((item) =>
-              item.product.id === product.id
+              item.id === cartItemId
                 ? { ...item, quantity: item.quantity + quantity }
                 : item
             );
             return { items: updatedItems };
           } else {
-            return { items: [...state.items, { product, quantity }] };
+            const newItem: CartItem = { id: cartItemId, product, quantity, size };
+            return { items: [...state.items, newItem] };
           }
         }),
-      removeFromCart: (productId) =>
+      removeFromCart: (cartItemId) =>
         set((state) => ({
-          items: state.items.filter((item) => item.product.id !== productId),
+          items: state.items.filter((item) => item.id !== cartItemId),
         })),
-      increaseQuantity: (productId) =>
+      increaseQuantity: (cartItemId) =>
         set((state) => ({
           items: state.items.map((item) =>
-            item.product.id === productId
+            item.id === cartItemId
               ? { ...item, quantity: item.quantity + 1 }
               : item
           ),
         })),
-      decreaseQuantity: (productId) =>
+      decreaseQuantity: (cartItemId) =>
         set((state) => ({
           items: state.items.map((item) =>
-            item.product.id === productId && item.quantity > 1
+            item.id === cartItemId && item.quantity > 1
               ? { ...item, quantity: item.quantity - 1 }
               : item
           ),

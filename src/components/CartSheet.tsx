@@ -31,7 +31,7 @@ export function CartSheet({ children }: { children: React.ReactNode }) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ items: items.map(item => ({ id: item.product.id, quantity: item.quantity })) }),
+        body: JSON.stringify({ items: items.map(item => ({ id: item.product.id, quantity: item.quantity, size: item.size })) }),
       });
 
       if (response.ok) {
@@ -67,24 +67,24 @@ export function CartSheet({ children }: { children: React.ReactNode }) {
                       : '/placeholder.svg'; // You can use any placeholder image URL
 
                     return (
-                      <div key={item.product.id} className="flex items-start justify-between">
+                      <div key={item.id} className="flex items-start justify-between">
                         <div className="flex items-center gap-4">
                           <img src={imageUrl} alt={item.product.title} className="h-16 w-16 object-cover rounded-md bg-muted" />
                           <div>
-                            <p className="font-medium">{item.product.title}</p>
+                            <p className="font-medium">{item.product.title}{item.size && ` - ${item.size}`}</p>
                             <p className="text-sm text-muted-foreground">{item.product.price}</p>
                             <div className="flex items-center gap-2 mt-2">
-                              <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => decreaseQuantity(item.product.id)} aria-label="Decrease quantity">
+                              <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => decreaseQuantity(item.id)} aria-label="Decrease quantity">
                                 <Minus className="h-4 w-4" />
                               </Button>
                               <span>{item.quantity}</span>
-                              <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => increaseQuantity(item.product.id)} aria-label="Increase quantity">
+                              <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => increaseQuantity(item.id)} aria-label="Increase quantity">
                                 <Plus className="h-4 w-4" />
                               </Button>
                             </div>
                           </div>
                         </div>
-                        <Button variant="ghost" size="icon" onClick={() => removeFromCart(item.product.id)} aria-label="Remove item">
+                        <Button variant="ghost" size="icon" onClick={() => removeFromCart(item.id)} aria-label="Remove item">
                            <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
