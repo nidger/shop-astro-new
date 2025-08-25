@@ -21,9 +21,12 @@ export function ProductPurchase({ product }: { product: Product }) {
     }, 1000); // Simulate a 1-second delay
   };
 
+  const hasSizes = product.sizes && product.sizes.length > 0;
+  const buttonText = hasSizes && !selectedSize ? "Pick a Size" : "Add to Cart";
+
   return (
     <div className="flex flex-col gap-6">
-      {product.sizes && (
+      {hasSizes && (
         <div className="flex flex-col gap-2">
           <p id="size-group-label" className="text-sm font-medium text-muted-foreground">Size</p>
           <ToggleGroup 
@@ -41,7 +44,9 @@ export function ProductPurchase({ product }: { product: Product }) {
         </div>
       )}
       <QuantityInput initialQuantity={1} onQuantityChange={setQuantity} />
-      <Button onClick={handleAddToCart} disabled={loading || (product.sizes && !selectedSize)} loading={loading} size="lg" fullWidth>Add to Cart</Button>
+      <Button onClick={handleAddToCart} disabled={loading || (hasSizes && !selectedSize)} loading={loading} size="lg" fullWidth>
+        {buttonText}
+      </Button>
     </div>
   );
 }
