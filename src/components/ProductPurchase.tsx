@@ -29,10 +29,10 @@ export function ProductPurchase({ product }: { product: Product }) {
           <ToggleGroup 
             type="single" 
             onValueChange={(value) => setSelectedSize(value)}
-            className="justify-start"
+            className="justify-start gap-x-2"
           >
             {product.sizes.map((size) => (
-              <ToggleGroupItem key={size} value={size} className="px-4">
+              <ToggleGroupItem key={size} value={size} variant="outline" className="px-4">
                 {size}
               </ToggleGroupItem>
             ))}
