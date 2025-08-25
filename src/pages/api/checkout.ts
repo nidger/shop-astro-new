@@ -16,18 +16,32 @@ export const POST: APIRoute = async ({ request }) => {
       return new Response('Invalid cart items', { status: 400 });
     }
 
+    const formatSize = (size: string) => {
+      switch (size.toUpperCase()) {
+        case 'S':
+          return 'Small';
+        case 'M':
+          return 'Medium';
+        case 'L':
+          return 'Large';
+        default:
+          return size;
+      }
+    };
+
     const line_items = cartItems.map(cartItem => {
       const product = allProducts.find(p => p.id === cartItem.id);
       if (!product) {
         throw new Error(`Product with id ${cartItem.id} not found`);
       }
       const priceInCents = parseFloat(product.price.substring(1)) * 100;
+      const name = cartItem.size ? `${product.title} - ${formatSize(cartItem.size)}` : product.title;
 
       return {
         price_data: {
           currency: 'usd',
           product_data: {
-            name: product.title,
+            name: name,
           },
           unit_amount: priceInCents,
         },
