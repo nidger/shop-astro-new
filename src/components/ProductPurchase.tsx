@@ -43,7 +43,10 @@ export function ProductPurchase({ product }: { product: Product }) {
           </ToggleGroup>
         </div>
       )}
-      <QuantityInput initialQuantity={1} onQuantityChange={setQuantity} />
+      <div className="flex flex-col gap-2">
+        <p className="text-sm font-medium text-muted-foreground">Quantity</p>
+        <QuantityInput initialQuantity={1} onQuantityChange={setQuantity} />
+      </div>
       <Button onClick={handleAddToCart} disabled={loading || (hasSizes && !selectedSize)} loading={loading} size="lg" fullWidth>
         {buttonText}
       </Button>
