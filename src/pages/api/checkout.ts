@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import Stripe from 'stripe';
 import { allProducts } from '@/data/products';
+import { colorOptions } from '@/data/variants';
 
 export const prerender = false;
 
@@ -35,7 +36,16 @@ export const POST: APIRoute = async ({ request }) => {
         throw new Error(`Product with id ${cartItem.id} not found`);
       }
       const priceInCents = parseFloat(product.price.substring(1)) * 100;
-      const name = `${product.title}${cartItem.size ? ` - ${formatSize(cartItem.size)}` : ''}${cartItem.color ? ` (${cartItem.color})` : ''}`;
+      
+      // Look up color name from the color key
+      const colorName = cartItem.color ? colorOptions[cartItem.color]?.name : null;
+      // Format size name
+      const sizeName = cartItem.size ? formatSize(cartItem.size) : null;
+
+      // Construct the final product name with variants
+      let name = product.title;
+      if (sizeName) name += ` - ${sizeName}`;
+      if (colorName) name += ` (${colorName})`;
 
       return {
         price_data: {

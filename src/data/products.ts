@@ -19,9 +19,9 @@ export interface Product {
 }
 
 export const allProducts: Product[] = [
-  { id: "1", slug: "embroidered-astro-bucket-hat", collectionId: "summer", title: "Embroidered Astro Bucket Hat", price: "£30.00", colors: ["#F5F5DC", "#FFB6C1", "#F0E68C"], images: [{src: bucketHat, alt: "Embroidered Astro Bucket Hat"}, {src: beachTowel, alt: "Embroidered Astro Bucket Hat"}, {src: tiedyeShirt, alt: "Embroidered Astro Bucket Hat"}] },
+  { id: "1", slug: "embroidered-astro-bucket-hat", collectionId: "summer", title: "Embroidered Astro Bucket Hat", price: "£30.00", colors: ['off-white', 'blush-pink', 'pale-yellow'], images: [{src: bucketHat, alt: "Embroidered Astro Bucket Hat"}, {src: beachTowel, alt: "Embroidered Astro Bucket Hat"}, {src: tiedyeShirt, alt: "Embroidered Astro Bucket Hat"}] },
   { id: "2", slug: "astro-striped-beach-towel", collectionId: "summer", title: "Astro Striped Beach Towel", price: "£35.00", images: [{src: beachTowel, alt: "Astro Striped Beach Towel"}, {src: bucketHat, alt: "Astro Striped Beach Towel"}] },
-  { id: "3", slug: "oversized-interplanetary-astro-t-shirt", collectionId: "summer", title: "Oversized Interplanetary Astro T-Shirt", price: "£34.00", colors: ["#FFFFFF", "#000000", "#FF0000"], sizes: ["S", "M", "L", "XL"], images: [{src: tiedyeShirt, alt: "Oversized Interplanetary Astro T-Shirt"}] },
+  { id: "3", slug: "oversized-interplanetary-astro-t-shirt", collectionId: "summer", title: "Oversized Interplanetary Astro T-Shirt", price: "£34.00", colors: ['white', 'black', 'cherry-red'], sizes: ["S", "M", "L", "XL"], images: [{src: tiedyeShirt, alt: "Oversized Interplanetary Astro T-Shirt"}] },
   { id: "4", slug: "oversized-astral-patches-tie-dye-t-shirt", collectionId: "summer", title: "Oversized Astral Patches Tie-Dye T-Shirt", price: "£38.00", images: [{src: tiedyeShirt, alt: "Oversized Astral Patches Tie-Dye T-Shirt"}] },
   { id: "5", slug: "astronaut-blue-zip-up-hoodie", collectionId: "apparel", title: "Astronaut Blue Zip-up Hoodie", price: "£45.00", images: [{src: blueHoodie, alt: "Astronaut Blue Zip-up Hoodie"}] },
   { id: "6", slug: "astro-pride-embroidered-hoodie", collectionId: "apparel", title: "Astro Pride Embroidered Hoodie", price: "£50.00", images: [{src: blueHoodie, alt: "Astro Pride Embroidered Hoodie"}] },

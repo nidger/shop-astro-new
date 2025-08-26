@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useCartStore } from '@/stores/cartStore';
 import type { allProducts } from '@/data/products';
+import { colorOptions } from '@/data/variants';
 import { Button } from '@/components/ui/button';
 import { QuantityInput } from './QuantityInput';
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -43,9 +44,19 @@ export function ProductPurchase({ product }: { product: Product }) {
             onValueChange={(value) => setSelectedColor(value)}
             className="justify-start gap-x-2"
           >
-            {product.colors.map((color) => (
-              <ToggleGroupItem key={color} value={color} className="h-8 w-8 rounded-full border-2 border-border data-[state=on]:ring-2 data-[state=on]:ring-ring data-[state=on]:ring-offset-2" style={{ backgroundColor: color }} aria-label={color} />
-            ))}
+            {product.colors.map((colorKey) => {
+              const color = colorOptions[colorKey];
+              if (!color) return null;
+              return (
+                <ToggleGroupItem 
+                  key={colorKey} 
+                  value={colorKey} 
+                  className="h-8 w-8 rounded-full border-2 border-border data-[state=on]:ring-2 data-[state=on]:ring-ring data-[state=on]:ring-offset-2" 
+                  style={{ backgroundColor: color.hex }} 
+                  aria-label={color.name} 
+                />
+              );
+            })}
           </ToggleGroup>
         </div>
       )}
