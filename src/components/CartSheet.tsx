@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useCartStore } from '@/stores/cartStore';
+import { colorOptions } from '@/data/variants';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter } from '@/components/ui/sheet';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -30,8 +31,7 @@ export function CartSheet({ children }: { children: React.ReactNode }) {
   const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
 
   const totalPrice = items.reduce((acc, item) => {
-    // Add a check to ensure price is a valid string before parsing
-    const priceString = item.product.price || '$0';
+    const priceString = item.product.price || '£0';
     const price = parseFloat(priceString.substring(1));
     return acc + price * item.quantity;
   }, 0);
@@ -73,11 +73,9 @@ export function CartSheet({ children }: { children: React.ReactNode }) {
               {items.length > 0 ? (
                 <div className="space-y-4">
                   {items.map((item) => {
-                    // **THE FIX IS HERE**
-                    // Safely get the image source. If it doesn't exist, use a placeholder.
                     const imageUrl = item.product.images && item.product.images.length > 0
                       ? item.product.images[0].src.src
-                      : '/placeholder.svg'; // You can use any placeholder image URL
+                      : '/placeholder.svg';
 
                     return (
                       <div key={item.id} className="flex items-start justify-between">
@@ -88,8 +86,17 @@ export function CartSheet({ children }: { children: React.ReactNode }) {
                             {(item.size || item.color) && (
                               <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
                                 {item.size && <span>{formatSize(item.size)}</span>}
-                                {item.size && item.color && <span>/</span>}
-                                {item.color && <div className="w-4 h-4 rounded-full border" style={{ backgroundColor: item.color }} title={item.color} />}
+                                {item.size && item.color && <span className="mx-1">/</span>}
+                                {item.color && (() => {
+                                  const color = colorOptions[item.color];
+                                  if (!color) return null;
+                                  return (
+                                    <div className="flex items-center gap-1.5">
+                                      <span>{color.name}</span>
+                                      <div className="w-3 h-3 rounded-full border" style={{ backgroundColor: color.hex }} title={color.name} />
+                                    </div>
+                                  );
+                                })()}
                               </div>
                             )}
                             <p className="text-sm font-medium mt-2">{item.product.price}</p>
