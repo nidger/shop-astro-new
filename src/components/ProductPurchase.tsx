@@ -41,7 +41,7 @@ export function ProductPurchase({ product }: { product: Product }) {
             className="justify-start gap-x-2"
           >
             {product.colors.map((color) => (
-              <ToggleGroupItem key={color} value={color} className="h-8 w-8 rounded-full border-2 border-border" style={{ backgroundColor: color }} aria-label={color} />
+              <ToggleGroupItem key={color} value={color} className="h-8 w-8 rounded-full border-2 border-border data-[state=on]:ring-2 data-[state=on]:ring-ring data-[state=on]:ring-offset-2" style={{ backgroundColor: color }} aria-label={color} />
             ))}
           </ToggleGroup>
         </div>
