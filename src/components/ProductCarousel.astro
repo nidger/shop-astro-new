@@ -40,137 +40,146 @@ const firstImage = images && images.length > 0 ? images[0] : null;
 )}
 
 <script type="module">
-  customElements.define("product-carousel", class extends HTMLElement {
-    constructor() {
-      super();
+  if (!customElements.get("product-carousel")) {
+    customElements.define("product-carousel", class extends HTMLElement {
+      constructor() {
+        super();
 
-      const imagesData = JSON.parse(this.dataset.images);
-      const productId = this.dataset.id;
-      
-      // If there are no images or only one, do nothing.
-      if (!imagesData || imagesData.length <= 1) {
-        return;
+        this.imagesData = JSON.parse(this.dataset.images);
+        const productId = this.dataset.id;
+        
+        // If there are no images or only one, do nothing.
+        if (!this.imagesData || this.imagesData.length <= 1) {
+          return;
+        }
+
+        this.buildCarousel(this.imagesData);
+        this.attachEventListeners();
+
+        // Listen for color selection events from outside the component
+        this.closest('main').addEventListener('color-selected', (e) => {
+          this.scrollToColor(e.detail.colorKey);
+        });
       }
 
-      
-      this.buildCarousel(imagesData);
-      this.attachEventListeners();
-    }
-
-    buildCarousel(images) {
-      const controlsPlaceholder = this.querySelector('#carousel-controls-placeholder');
-      const imageViewer = this.querySelector('#product-carousel-images');
-
-      
-      images.slice(1).forEach((image, index) => {
-        const slide = document.createElement('div');
-        slide.className = 'product-carousel-image w-full aspect-square shrink-0 snap-start';
-        
-        slide.id = `product-carousel-image-${index + 1}`; 
-        
-        const img = document.createElement('img');
-        img.src = image.src.src; 
-        img.alt = image.alt;
-        img.loading = 'lazy';
-        img.decoding = 'async';
-        img.className = 'w-full h-full object-cover';
-        
-        slide.appendChild(img);
-        imageViewer.appendChild(slide);
-      });
-
-      
-      const controlsHTML = `
-        <div class="flex gap-2 justify-center items-center">
-          <button id="product-carousel-prev" aria-label="Previous image" class="p-2 rounded-md border bg-card text-card-foreground hover:bg-accent disabled:opacity-50">
-            <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" width="20">
-              <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414L7.828 11Z"></path>
-            </svg>
-          </button>
-          <div role="tablist" aria-label="Image thumbnails" class="flex gap-2">
-            ${images.map((image, index) => `
-              <button
-                type="button"
-                role="tab"
-                aria-label="Image ${index + 1}"
-                aria-selected="${index === 0 ? 'true' : 'false'}"
-                class="overflow-hidden w-16 h-16 rounded-md bg-muted border ${index === 0 ? 'ring-2 ring-ring' : ''}"
-              >
-                <img
-                  src="${image.src.src}"
-                  alt="Thumbnail for product image ${index + 1}"
-                  loading="lazy"
-                  width="64"
-                  height="64"
-                  decoding="async"
-                  class="w-full h-full object-cover"
-                />
-              </button>
-            `).join('')}
-          </div>
-          <button id="product-carousel-next" aria-label="Next image" class="p-2 rounded-md border bg-card text-card-foreground hover:bg-accent disabled:opacity-50">
-            <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" width="20" class="rotate-180">
-              <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414L7.828 11Z"></path>
-            </svg>
-          </button>
-        </div>
-      `;
-
-      
-      controlsPlaceholder.innerHTML = controlsHTML;
-    }
-
-    attachEventListeners() {
-      
-      const scrollContainer = this.querySelector("#product-carousel-images");
-      const slides = [...this.querySelectorAll(".product-carousel-image")];
-      const tabs = [...this.querySelectorAll('button[role="tab"]')];
-      let currentIndex = 0;
-
-      const updateUI = () => {
-        tabs.forEach((tab, index) => {
-          const isSelected = index === currentIndex;
-          tab.setAttribute('aria-selected', isSelected);
-          tab.classList.toggle('ring-2', isSelected);
-          tab.classList.toggle('ring-ring', isSelected);
-        });
-      };
-
-      const scrollToSlide = (index) => {
-        currentIndex = index;
-        scrollContainer.scrollTo({
-          left: scrollContainer.offsetWidth * index,
-          behavior: 'smooth',
-        });
-        updateUI();
-      };
-      
-      tabs.forEach((tab, index) => {
-        tab.addEventListener('click', () => scrollToSlide(index));
-      });
-
-      this.querySelector('#product-carousel-prev').addEventListener('click', () => {
-        const newIndex = currentIndex === 0 ? slides.length - 1 : currentIndex - 1;
-        scrollToSlide(newIndex);
-      });
-
-      this.querySelector('#product-carousel-next').addEventListener('click', () => {
-        const newIndex = currentIndex === slides.length - 1 ? 0 : currentIndex + 1;
-        scrollToSlide(newIndex);
-      });
-
-      
-      const observer = new IntersectionObserver((entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            const slideIndex = slides.indexOf(entry.target);
-            currentIndex = slideIndex;
-            updateUI();
-          }
+      scrollToColor(colorKey) {
+        const imageIndex = this.imagesData.findIndex(img => img.colorKey === colorKey);
+        // If an image is found for the selected color, scroll to it.
+        // Otherwise, do nothing (graceful degradation).
+        if (imageIndex !== -1) {
+          this.scrollToSlide(imageIndex);
         }
-      }, { root: scrollContainer, threshold: 0.5 });
+      }
 
-      slides.forEach(slide => observer.observe(slide));
-    }
-  });
+      buildCarousel(images) {
+        const controlsPlaceholder = this.querySelector('#carousel-controls-placeholder');
+        const imageViewer = this.querySelector('#product-carousel-images');
+
+        images.slice(1).forEach((image, index) => {
+          const slide = document.createElement('div');
+          slide.className = 'product-carousel-image w-full aspect-square shrink-0 snap-start';
+          slide.id = `product-carousel-image-${index + 1}`; 
+          
+          const img = document.createElement('img');
+          img.src = image.src.src; 
+          img.alt = image.alt;
+          img.loading = 'lazy';
+          img.decoding = 'async';
+          img.className = 'w-full h-full object-cover';
+          
+          slide.appendChild(img);
+          imageViewer.appendChild(slide);
+        });
+
+        const controlsHTML = `
+          <div class="flex gap-2 justify-center items-center">
+            <button id="product-carousel-prev" aria-label="Previous image" class="p-2 rounded-md border bg-card text-card-foreground hover:bg-accent disabled:opacity-50">
+              <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" width="20">
+                <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414L7.828 11Z"></path>
+              </svg>
+            </button>
+            <div role="tablist" aria-label="Image thumbnails" class="flex gap-2">
+              ${images.map((image, index) => `
+                <button
+                  type="button"
+                  role="tab"
+                  aria-label="Image ${index + 1}"
+                  aria-selected="${index === 0 ? 'true' : 'false'}"
+                  class="overflow-hidden w-16 h-16 rounded-md bg-muted border ${index === 0 ? 'ring-2 ring-ring' : ''}"
+                >
+                  <img
+                    src="${image.src.src}"
+                    alt="Thumbnail for product image ${index + 1}"
+                    loading="lazy"
+                    width="64"
+                    height="64"
+                    decoding="async"
+                    class="w-full h-full object-cover"
+                  />
+                </button>
+              `).join('')}
+            </div>
+            <button id="product-carousel-next" aria-label="Next image" class="p-2 rounded-md border bg-card text-card-foreground hover:bg-accent disabled:opacity-50">
+              <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" width="20" class="rotate-180">
+                <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414L7.828 11Z"></path>
+              </svg>
+            </button>
+          </div>
+        `;
+
+        controlsPlaceholder.innerHTML = controlsHTML;
+      }
+
+      attachEventListeners() {
+        const scrollContainer = this.querySelector("#product-carousel-images");
+        this.slides = [...this.querySelectorAll(".product-carousel-image")];
+        this.tabs = [...this.querySelectorAll('button[role="tab"]')];
+        this.currentIndex = 0;
+
+        const updateUI = () => {
+          this.tabs.forEach((tab, index) => {
+            const isSelected = index === this.currentIndex;
+            tab.setAttribute('aria-selected', isSelected);
+            tab.classList.toggle('ring-2', isSelected);
+            tab.classList.toggle('ring-ring', isSelected);
+          });
+        };
+
+        this.scrollToSlide = (index) => {
+          this.currentIndex = index;
+          scrollContainer.scrollTo({
+            left: scrollContainer.offsetWidth * index,
+            behavior: 'smooth',
+          });
+          updateUI();
+        };
+        
+        this.tabs.forEach((tab, index) => {
+          tab.addEventListener('click', () => this.scrollToSlide(index));
+        });
+
+        this.querySelector('#product-carousel-prev').addEventListener('click', () => {
+          const newIndex = this.currentIndex === 0 ? this.slides.length - 1 : this.currentIndex - 1;
+          this.scrollToSlide(newIndex);
+        });
+
+        this.querySelector('#product-carousel-next').addEventListener('click', () => {
+          const newIndex = this.currentIndex === this.slides.length - 1 ? 0 : this.currentIndex + 1;
+          this.scrollToSlide(newIndex);
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              const slideIndex = this.slides.indexOf(entry.target);
+              this.currentIndex = slideIndex;
+              updateUI();
+            }
+          }
+        }, { root: scrollContainer, threshold: 0.5 });
+
+        this.slides.forEach(slide => observer.observe(slide));
+      }
+    });
+  }
 </script>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useCartStore } from '@/stores/cartStore';
 import type { allProducts } from '@/data/products';
 import { colorOptions } from '@/data/variants';
@@ -14,6 +14,7 @@ export function ProductPurchase({ product }: { product: Product }) {
   const [selectedSize, setSelectedSize] = useState<string | undefined>();
   const [selectedColor, setSelectedColor] = useState<string | undefined>();
   const { addToCart } = useCartStore();
+  const componentRef = useRef<HTMLDivElement>(null);
 
   const handleAddToCart = () => {
     setLoading(true);
@@ -21,6 +22,18 @@ export function ProductPurchase({ product }: { product: Product }) {
       addToCart(product, quantity, selectedSize, selectedColor);
       setLoading(false);
     }, 1000); // Simulate a 1-second delay
+  };
+
+  const handleColorChange = (colorKey: string) => {
+    setSelectedColor(colorKey);
+    if (!componentRef.current) return;
+
+    const event = new CustomEvent('color-selected', {
+      bubbles: true,
+      composed: true,
+      detail: { colorKey },
+    });
+    componentRef.current.dispatchEvent(event);
   };
 
   const hasSizes = product.sizes && product.sizes.length > 0;
@@ -34,14 +47,14 @@ export function ProductPurchase({ product }: { product: Product }) {
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6" ref={componentRef}>
       {hasColors && (
         <div className="flex flex-col gap-2">
           <p id="color-group-label" className="text-sm font-medium text-muted-foreground">Color</p>
           <ToggleGroup 
             type="single" 
             aria-labelledby="color-group-label"
-            onValueChange={(value) => setSelectedColor(value)}
+            onValueChange={handleColorChange}
             className="justify-start gap-x-2"
           >
             {product.colors.map((colorKey) => {

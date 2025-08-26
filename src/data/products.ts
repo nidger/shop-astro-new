@@ -13,13 +13,29 @@ export interface Product {
   collectionId: string;
   title: string;
   price: string;
-  images: { src: any; alt: string }[];
+  images: { 
+    src: any; 
+    alt: string;
+    colorKey?: string; // <-- New optional property
+  }[];
   colors?: string[];
   sizes?: string[];
 }
 
 export const allProducts: Product[] = [
-  { id: "1", slug: "embroidered-astro-bucket-hat", collectionId: "summer", title: "Embroidered Astro Bucket Hat", price: "£30.00", colors: ['off-white', 'blush-pink', 'pale-yellow'], images: [{src: bucketHat, alt: "Embroidered Astro Bucket Hat"}, {src: beachTowel, alt: "Embroidered Astro Bucket Hat"}, {src: tiedyeShirt, alt: "Embroidered Astro Bucket Hat"}] },
+  { 
+    id: "1", 
+    slug: "embroidered-astro-bucket-hat", 
+    collectionId: "summer", 
+    title: "Embroidered Astro Bucket Hat", 
+    price: "£30.00", 
+    colors: ['off-white', 'blush-pink', 'pale-yellow'], 
+    images: [
+      {src: bucketHat, alt: "Embroidered Astro Bucket Hat", colorKey: 'off-white'},
+      {src: beachTowel, alt: "Embroidered Astro Bucket Hat", colorKey: 'blush-pink'},
+      {src: tiedyeShirt, alt: "Embroidered Astro Bucket Hat", colorKey: 'pale-yellow'}
+    ]
+  },
   { id: "2", slug: "astro-striped-beach-towel", collectionId: "summer", title: "Astro Striped Beach Towel", price: "£35.00", images: [{src: beachTowel, alt: "Astro Striped Beach Towel"}, {src: bucketHat, alt: "Astro Striped Beach Towel"}] },
   { id: "3", slug: "oversized-interplanetary-astro-t-shirt", collectionId: "summer", title: "Oversized Interplanetary Astro T-Shirt", price: "£34.00", colors: ['white', 'black', 'cherry-red'], sizes: ["S", "M", "L", "XL"], images: [{src: tiedyeShirt, alt: "Oversized Interplanetary Astro T-Shirt"}] },
   { id: "4", slug: "oversized-astral-patches-tie-dye-t-shirt", collectionId: "summer", title: "Oversized Astral Patches Tie-Dye T-Shirt", price: "£38.00", images: [{src: tiedyeShirt, alt: "Oversized Astral Patches Tie-Dye T-Shirt"}] },
