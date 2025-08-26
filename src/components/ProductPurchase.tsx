@@ -25,9 +25,12 @@ export function ProductPurchase({ product }: { product: Product }) {
   const hasSizes = product.sizes && product.sizes.length > 0;
   const hasColors = product.colors && product.colors.length > 0;
   
-  const buttonText = (hasSizes && !selectedSize) || (hasColors && !selectedColor) 
-    ? "Select Options" 
-    : "Add to Cart";
+  let buttonText = "Add to Cart";
+  if (hasColors && !selectedColor) {
+    buttonText = "Pick a Colour";
+  } else if (hasSizes && !selectedSize) {
+    buttonText = "Pick a Size";
+  }
 
   return (
     <div className="flex flex-col gap-6">

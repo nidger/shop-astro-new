@@ -84,11 +84,15 @@ export function CartSheet({ children }: { children: React.ReactNode }) {
                         <div className="flex items-center gap-4">
                           <img src={imageUrl} alt={item.product.title} className="h-16 w-16 object-cover rounded-md bg-muted" />
                           <div>
-                            <div className="flex items-center gap-2">
-                              <p className="font-medium">{item.product.title}{item.size && ` - ${formatSize(item.size)}`}</p>
-                              {item.color && <div className="w-4 h-4 rounded-full border" style={{ backgroundColor: item.color }} title={item.color} />}
-                            </div>
-                            <p className="text-sm text-muted-foreground">{item.product.price}</p>
+                            <p className="font-medium">{item.product.title}</p>
+                            {(item.size || item.color) && (
+                              <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
+                                {item.size && <span>{formatSize(item.size)}</span>}
+                                {item.size && item.color && <span>/</span>}
+                                {item.color && <div className="w-4 h-4 rounded-full border" style={{ backgroundColor: item.color }} title={item.color} />}
+                              </div>
+                            )}
+                            <p className="text-sm font-medium mt-2">{item.product.price}</p>
                             <div className="flex items-center gap-2 mt-2">
                               <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => decreaseQuantity(item.id)} aria-label="Decrease quantity">
                                 <Minus className="h-4 w-4" />
