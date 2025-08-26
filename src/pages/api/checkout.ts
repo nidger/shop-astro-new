@@ -39,7 +39,7 @@ export const POST: APIRoute = async ({ request }) => {
 
       return {
         price_data: {
-          currency: 'usd',
+          currency: 'gbp',
           product_data: {
             name: name,
           },
@@ -57,6 +57,24 @@ export const POST: APIRoute = async ({ request }) => {
       mode: 'payment',
       success_url: `${request.headers.get('origin')}/order/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: cancel_url,
+      shipping_address_collection: {
+        // Add the two-letter ISO country codes for all countries you ship to.
+        allowed_countries: ['GB', 'IE'],
+      },
+      // This adds a simple flat-rate shipping fee. For more complex, location-based rates,
+      // create them in your Stripe Dashboard and pass the `shipping_rate` IDs here instead.
+      shipping_options: [
+        {
+          shipping_rate_data: {
+            type: 'fixed_amount',
+            fixed_amount: {
+              amount: 499,
+              currency: 'gbp',
+            },
+            display_name: 'Standard Shipping',
+          },
+        },
+      ],
     });
 
     if (session.url) {
