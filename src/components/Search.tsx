@@ -73,10 +73,10 @@ export function Search() {
           <SearchIcon className="h-5 w-5" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="overflow-hidden p-0 shadow-lg w-[calc(100%-2rem)] rounded-lg sm:w-full sm:max-w-lg">
+      <DialogContent aria-describedby="search-description" className="overflow-hidden p-0 shadow-lg w-[calc(100%-2rem)] rounded-lg sm:w-full sm:max-w-lg">
         <DialogHeader className="sr-only">
           <DialogTitle>Search Products</DialogTitle>
-          <DialogDescription>Search for products in our store.</DialogDescription>
+          <DialogDescription id="search-description">Search for products in our store.</DialogDescription>
         </DialogHeader>
         <Command className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5">
           <CommandInput 
