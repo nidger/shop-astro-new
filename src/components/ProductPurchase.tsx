@@ -11,21 +11,41 @@ export function ProductPurchase({ product }: { product: Product }) {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string | undefined>();
+  const [selectedColor, setSelectedColor] = useState<string | undefined>();
   const { addToCart } = useCartStore();
 
   const handleAddToCart = () => {
     setLoading(true);
     setTimeout(() => {
-      addToCart(product, quantity, selectedSize);
+      addToCart(product, quantity, selectedSize, selectedColor);
       setLoading(false);
     }, 1000); // Simulate a 1-second delay
   };
 
   const hasSizes = product.sizes && product.sizes.length > 0;
-  const buttonText = hasSizes && !selectedSize ? "Pick a Size" : "Add to Cart";
+  const hasColors = product.colors && product.colors.length > 0;
+  
+  const buttonText = (hasSizes && !selectedSize) || (hasColors && !selectedColor) 
+    ? "Select Options" 
+    : "Add to Cart";
 
   return (
     <div className="flex flex-col gap-6">
+      {hasColors && (
+        <div className="flex flex-col gap-2">
+          <p id="color-group-label" className="text-sm font-medium text-muted-foreground">Color</p>
+          <ToggleGroup 
+            type="single" 
+            aria-labelledby="color-group-label"
+            onValueChange={(value) => setSelectedColor(value)}
+            className="justify-start gap-x-2"
+          >
+            {product.colors.map((color) => (
+              <ToggleGroupItem key={color} value={color} className="h-8 w-8 rounded-full border-2 border-border" style={{ backgroundColor: color }} aria-label={color} />
+            ))}
+          </ToggleGroup>
+        </div>
+      )}
       {hasSizes && (
         <div className="flex flex-col gap-2">
           <p id="size-group-label" className="text-sm font-medium text-muted-foreground">Size</p>
@@ -47,7 +67,7 @@ export function ProductPurchase({ product }: { product: Product }) {
         <p className="text-sm font-medium text-muted-foreground">Quantity</p>
         <QuantityInput initialQuantity={1} onQuantityChange={setQuantity} />
       </div>
-      <Button onClick={handleAddToCart} disabled={loading || (hasSizes && !selectedSize)} loading={loading} size="lg" fullWidth>
+      <Button onClick={handleAddToCart} disabled={loading || (hasSizes && !selectedSize) || (hasColors && !selectedColor)} loading={loading} size="lg" fullWidth>
         {buttonText}
       </Button>
     </div>

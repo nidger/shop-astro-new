@@ -5,15 +5,16 @@ import type { allProducts } from '../data/products';
 type Product = (typeof allProducts)[0];
 
 export interface CartItem {
-  id: string; // Unique identifier for the cart item, e.g., "1-M"
+  id: string; // Unique identifier for the cart item, e.g., "1-M-Red"
   product: Product;
   quantity: number;
   size?: string;
+  color?: string;
 }
 
 export interface CartState {
   items: CartItem[];
-  addToCart: (product: Product, quantity?: number, size?: string) => void;
+  addToCart: (product: Product, quantity?: number, size?: string, color?: string) => void;
   removeFromCart: (cartItemId: string) => void;
   increaseQuantity: (cartItemId: string) => void;
   decreaseQuantity: (cartItemId: string) => void;
@@ -24,10 +25,10 @@ export const useCartStore = create<CartState>()(
   persist(
     (set) => ({
       items: [],
-      addToCart: (product, quantity = 1, size) =>
+      addToCart: (product, quantity = 1, size, color) =>
         set((state) => {
-          // Create a unique ID for the cart item based on product ID and size
-          const cartItemId = size ? `${product.id}-${size}` : product.id;
+          // Create a unique ID for the cart item based on product ID, size, and color
+          const cartItemId = `${product.id}${size ? `-${size}` : ''}${color ? `-${color}` : ''}`;
           const existingItem = state.items.find((item) => item.id === cartItemId);
 
           if (existingItem) {
@@ -38,7 +39,7 @@ export const useCartStore = create<CartState>()(
             );
             return { items: updatedItems };
           } else {
-            const newItem: CartItem = { id: cartItemId, product, quantity, size };
+            const newItem: CartItem = { id: cartItemId, product, quantity, size, color };
             return { items: [...state.items, newItem] };
           }
         }),

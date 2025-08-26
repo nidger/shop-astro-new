@@ -35,7 +35,7 @@ export const POST: APIRoute = async ({ request }) => {
         throw new Error(`Product with id ${cartItem.id} not found`);
       }
       const priceInCents = parseFloat(product.price.substring(1)) * 100;
-      const name = cartItem.size ? `${product.title} - ${formatSize(cartItem.size)}` : product.title;
+      const name = `${product.title}${cartItem.size ? ` - ${formatSize(cartItem.size)}` : ''}${cartItem.color ? ` (${cartItem.color})` : ''}`;
 
       return {
         price_data: {

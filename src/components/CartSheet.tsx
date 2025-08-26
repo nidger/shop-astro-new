@@ -44,7 +44,7 @@ export function CartSheet({ children }: { children: React.ReactNode }) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ items: items.map(item => ({ id: item.product.id, quantity: item.quantity, size: item.size })) }),
+        body: JSON.stringify({ items: items.map(item => ({ id: item.product.id, quantity: item.quantity, size: item.size, color: item.color })) }),
       });
 
       if (response.ok) {
@@ -84,7 +84,10 @@ export function CartSheet({ children }: { children: React.ReactNode }) {
                         <div className="flex items-center gap-4">
                           <img src={imageUrl} alt={item.product.title} className="h-16 w-16 object-cover rounded-md bg-muted" />
                           <div>
-                            <p className="font-medium">{item.product.title}{item.size && ` - ${formatSize(item.size)}`}</p>
+                            <div className="flex items-center gap-2">
+                              <p className="font-medium">{item.product.title}{item.size && ` - ${formatSize(item.size)}`}</p>
+                              {item.color && <div className="w-4 h-4 rounded-full border" style={{ backgroundColor: item.color }} title={item.color} />}
+                            </div>
                             <p className="text-sm text-muted-foreground">{item.product.price}</p>
                             <div className="flex items-center gap-2 mt-2">
                               <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => decreaseQuantity(item.id)} aria-label="Decrease quantity">
