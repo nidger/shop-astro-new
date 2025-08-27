@@ -1,9 +1,9 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import ProductCard from '../../components/ProductCard.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import { Button } from '../../components/ui/button';
 import { allProducts, collections } from '../../data/products.ts';
+import ProductGrid from '../../components/ProductGrid.astro';
 
 export function getStaticPaths() {
   return collections.map((collection) => ({
@@ -33,26 +33,15 @@ const breadcrumbLinks = [
       <Breadcrumb links={breadcrumbLinks} />
     </div>
 
-    <div>
+    <div class="mb-8">
       <h1 class="text-4xl font-bold">{currentCollection.title}</h1>
       <p class="text-muted-foreground mt-1">{productsInCollection.length} products</p>
     </div>
-    
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
-      {productsInCollection.map((product) => (
-        <ProductCard
-          id={product.id}
-          slug={product.slug}
-          images={product.images}
-          title={product.title}
-          price={product.price}
-          colors={product.colors}
-        />
-      ))}
-    </div>
+
+    <ProductGrid products={productsInCollection} />
 
     <div class="text-center mt-12">
-      <a href="/">
+      <a href="/products">
         <Button variant="outline" size="lg">View All Products</Button>
       </a>
     </div>

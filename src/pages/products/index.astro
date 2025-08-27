@@ -1,0 +1,25 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { allProducts } from '../../data/products.ts';
+import ProductGrid from '../../components/ProductGrid.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+
+const breadcrumbLinks = [
+  { text: 'Home', href: '/' },
+  { text: 'All Products', href: null } // Current page
+];
+---
+<Layout>
+  <main class="px-6 py-8">
+    <div class="mb-8">
+      <Breadcrumb links={breadcrumbLinks} />
+    </div>
+
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold">All Products</h1>
+      <p class="text-muted-foreground mt-1">{allProducts.length} products</p>
+    </div>
+
+    <ProductGrid products={allProducts} />
+  </main>
+</Layout>

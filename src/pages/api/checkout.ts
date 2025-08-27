@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import Stripe from 'stripe';
 import { allProducts } from '@/data/products';
 import { colorOptions } from '@/data/variants';
+import { formatSize } from '@/lib/utils';
 
 export const prerender = false;
 
@@ -16,19 +17,6 @@ export const POST: APIRoute = async ({ request }) => {
     if (!cartItems || !Array.isArray(cartItems)) {
       return new Response('Invalid cart items', { status: 400 });
     }
-
-    const formatSize = (size: string) => {
-      switch (size.toUpperCase()) {
-        case 'S':
-          return 'Small';
-        case 'M':
-          return 'Medium';
-        case 'L':
-          return 'Large';
-        default:
-          return size;
-      }
-    };
 
     const line_items = cartItems.map(cartItem => {
       const product = allProducts.find(p => p.id === cartItem.id);

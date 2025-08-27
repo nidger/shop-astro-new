@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useCartStore } from '@/stores/cartStore';
 import { colorOptions } from '@/data/variants';
+import { formatSize } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter } from '@/components/ui/sheet';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -10,19 +11,6 @@ export function CartSheet({ children }: { children: React.ReactNode }) {
   const { items, removeFromCart, clearCart, increaseQuantity, decreaseQuantity } = useCartStore();
   const [loading, setLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
-
-  const formatSize = (size: string) => {
-    switch (size.toUpperCase()) {
-      case 'S':
-        return 'Small';
-      case 'M':
-        return 'Medium';
-      case 'L':
-        return 'Large';
-      default:
-        return size;
-    }
-  };
 
   useEffect(() => {
     setIsHydrated(true);
