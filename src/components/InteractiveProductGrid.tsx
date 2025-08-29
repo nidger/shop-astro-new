@@ -2,6 +2,9 @@ import { useState, useMemo } from 'react';
 import type { Product } from '@/data/products';
 import { ProductCard } from './ProductCard';
 import { SortDropdown, sortOptions, type SortOption } from './SortDropdown';
+import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { FilterPanel } from './FilterPanel';
 
 export function InteractiveProductGrid({ products, title, productCount }: { products: Product[], title: string, productCount: number }) {
   const [sortOrder, setSortOrder] = useState<SortOption>('price-asc');
@@ -29,12 +32,10 @@ export function InteractiveProductGrid({ products, title, productCount }: { prod
   }, [products, sortOrder]);
 
   const handleSortChange = (newSortOrder: SortOption) => {
-    // Ensure the browser supports the View Transition API
     if (!document.startViewTransition) {
       setSortOrder(newSortOrder);
       return;
     }
-    // Use the API to animate the state change
     document.startViewTransition(() => {
       setSortOrder(newSortOrder);
     });
@@ -42,12 +43,22 @@ export function InteractiveProductGrid({ products, title, productCount }: { prod
 
   return (
     <div className="px-6 py-8">
-      <div className="mb-8 flex justify-between items-center">
-        <div>
+      <div className="mb-8">
+        <div className="mb-4">
           <h1 className="text-4xl font-bold">{title}</h1>
           <p className="text-muted-foreground mt-1">{productCount} products</p>
         </div>
-        <SortDropdown onSortChange={handleSortChange} defaultValue={sortOrder} />
+        <div className="flex justify-between items-center">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline">Filter</Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto">
+              <FilterPanel />
+            </PopoverContent>
+          </Popover>
+          <SortDropdown onSortChange={handleSortChange} defaultValue={sortOrder} />
+        </div>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {sortedProducts.map(product => (
