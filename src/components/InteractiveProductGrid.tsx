@@ -28,6 +28,18 @@ export function InteractiveProductGrid({ products, title, productCount }: { prod
     return sorted;
   }, [products, sortOrder]);
 
+  const handleSortChange = (newSortOrder: SortOption) => {
+    // Ensure the browser supports the View Transition API
+    if (!document.startViewTransition) {
+      setSortOrder(newSortOrder);
+      return;
+    }
+    // Use the API to animate the state change
+    document.startViewTransition(() => {
+      setSortOrder(newSortOrder);
+    });
+  };
+
   return (
     <div className="px-6 py-8">
       <div className="mb-8 flex justify-between items-center">
@@ -35,7 +47,7 @@ export function InteractiveProductGrid({ products, title, productCount }: { prod
           <h1 className="text-4xl font-bold">{title}</h1>
           <p className="text-muted-foreground mt-1">{productCount} products</p>
         </div>
-        <SortDropdown onSortChange={setSortOrder} defaultValue={sortOrder} />
+        <SortDropdown onSortChange={handleSortChange} defaultValue={sortOrder} />
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {sortedProducts.map(product => (
