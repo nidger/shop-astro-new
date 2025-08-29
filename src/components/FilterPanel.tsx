@@ -5,12 +5,31 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 const sizeOptions = ["S", "M", "L", "XL"];
 
-export function FilterPanel() {
+interface FilterPanelProps {
+  selectedColors: string[];
+  selectedSizes: string[];
+  onColorChange: (colors: string[]) => void;
+  onSizeChange: (sizes: string[]) => void;
+  onPriceChange: (price: { from?: number; to?: number }) => void;
+}
+
+export function FilterPanel({ 
+  selectedColors,
+  selectedSizes,
+  onColorChange, 
+  onSizeChange, 
+  onPriceChange 
+}: FilterPanelProps) {
   return (
     <div className="p-4 space-y-6 w-[300px]">
       <div className="space-y-4">
         <h4 className="font-medium">Color</h4>
-        <ToggleGroup type="multiple" className="flex-wrap justify-start gap-2">
+        <ToggleGroup 
+          type="multiple" 
+          className="flex-wrap justify-start gap-2" 
+          value={selectedColors}
+          onValueChange={onColorChange}
+        >
           {Object.entries(colorOptions).map(([key, { name, hex }]) => (
             <ToggleGroupItem 
               key={key} 
@@ -25,7 +44,12 @@ export function FilterPanel() {
 
       <div className="space-y-4">
         <h4 className="font-medium">Size</h4>
-        <ToggleGroup type="multiple" className="justify-start gap-x-2">
+        <ToggleGroup 
+          type="multiple" 
+          className="justify-start gap-x-2" 
+          value={selectedSizes}
+          onValueChange={onSizeChange}
+        >
           {sizeOptions.map((size) => (
             <ToggleGroupItem key={size} value={size} variant="outline" className="px-4">
               {size}
@@ -39,12 +63,24 @@ export function FilterPanel() {
         <div className="flex items-center space-x-2">
           <div className="relative">
             <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">£</span>
-            <Input type="number" placeholder="From" aria-label="Minimum price" className="pl-7" />
+            <Input 
+              type="number" 
+              placeholder="From" 
+              aria-label="Minimum price" 
+              className="pl-7" 
+              onChange={(e) => onPriceChange({ from: e.target.valueAsNumber })}
+            />
           </div>
           <span>-</span>
           <div className="relative">
             <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">£</span>
-            <Input type="number" placeholder="To" aria-label="Maximum price" className="pl-7" />
+            <Input 
+              type="number" 
+              placeholder="To" 
+              aria-label="Maximum price" 
+              className="pl-7" 
+              onChange={(e) => onPriceChange({ to: e.target.valueAsNumber })}
+            />
           </div>
         </div>
       </div>
