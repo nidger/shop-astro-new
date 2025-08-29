@@ -1,0 +1,119 @@
+---
+import ProductCard from './ProductCard.astro';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+
+const { products, title, productCount } = Astro.props;
+
+const sortOptions = {
+  'price-asc': 'Price: Low to High',
+  'price-desc': 'Price: High to Low',
+  'name-asc': 'Name: A to Z',
+  'name-desc': 'Name: Z to A',
+};
+---
+<interactive-product-grid data-products={JSON.stringify(products)}>
+  <div class="px-6 py-8">
+    <div class="mb-8 flex justify-between items-center">
+      <div>
+        <h1 class="text-4xl font-bold">{title}</h1>
+        <p class="text-muted-foreground mt-1">{productCount} products</p>
+      </div>
+      <Select>
+        <SelectTrigger className="w-[180px]" aria-label="Sort products">
+          <SelectValue placeholder="Sort by" />
+        </SelectTrigger>
+        <SelectContent>
+          {Object.entries(sortOptions).map(([key, value]) => (
+            <SelectItem key={key} value={key}>{value}</SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+    <div id="product-grid-container" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {products.map(product => (
+        <ProductCard {...product} />
+      ))}
+    </div>
+  </div>
+</interactive-product-grid>
+
+<script>
+  class InteractiveProductGrid extends HTMLElement {
+    constructor() {
+      super();
+      this.products = JSON.parse(this.dataset.products);
+      this.sortSelect = this.querySelector('select'); // This will be handled by the Select component's internals
+      this.gridContainer = this.querySelector('#product-grid-container');
+      
+      // The Shadcn/ui Select component is complex. We need to find the actual button to listen to its value change.
+      // A more robust way is to listen for the custom event it dispatches.
+      // For now, we will find the hidden input that holds the value.
+      const selectTrigger = this.querySelector('button[role="combobox"]');
+      if (selectTrigger) {
+        // This is a bit of a hack to get the value from the Shadcn Select component.
+        // A better implementation would be to convert the Select to a React island and pass events.
+        // But to stick to vanilla JS, we observe mutations.
+        const observer = new MutationObserver((mutations) => {
+          for (const mutation of mutations) {
+            if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+              const value = selectTrigger.querySelector('span')?.textContent;
+              const sortKey = Object.keys(sortOptions).find(key => sortOptions[key] === value);
+              if (sortKey) {
+                this.sortAndRerender(sortKey);
+              }
+            }
+          }
+        });
+        observer.observe(selectTrigger, { childList: true, subtree: true });
+      }
+    }
+
+    sortAndRerender(sortOrder) {
+      const getPrice = (priceString) => parseFloat(priceString.substring(1));
+
+      const sorted = [...this.products].sort((a, b) => {
+        switch (sortOrder) {
+          case 'price-asc':
+            return getPrice(a.price) - getPrice(b.price);
+          case 'price-desc':
+            return getPrice(b.price) - getPrice(a.price);
+          case 'name-asc':
+            return a.title.localeCompare(b.title);
+          case 'name-desc':
+            return b.title.localeCompare(a.title);
+          default:
+            return 0;
+        }
+      });
+
+      // This is where we manually rebuild the HTML
+      this.gridContainer.innerHTML = sorted.map(product => {
+        // Manually construct the HTML for a ProductCard.
+        // This is complex and needs to be kept in sync with ProductCard.astro
+        const colorsHtml = product.colors ? product.colors.map(colorKey => {
+          // We don't have access to colorOptions here. This is a problem.
+          return `<div class="w-3 h-3 rounded-full border border-border" style="background-color: ${colorKey}" title="${colorKey}"></div>`;
+        }).join('') : '';
+
+        return `
+          <a href="/products/${product.slug}">
+            <div class="bg-card rounded-lg p-4 hover:bg-card-hover transition-colors cursor-pointer h-full flex flex-col">
+              <div class="aspect-square bg-muted rounded-lg mb-3 overflow-hidden" style="view-transition-name: product-image-${product.id}">
+                <img src="${product.images[0].src.src}" alt="${product.images[0].alt}" class="w-full h-full object-cover" loading="lazy">
+              </div>
+              <div class="flex-grow">
+                <h3 class="text-sm font-medium text-card-foreground mb-1 line-clamp-2">${product.title}</h3>
+                <p class="text-price font-medium text-sm mb-2">${product.price}</p>
+              </div>
+              ${colorsHtml ? `<div class="flex space-x-1 mt-auto">${colorsHtml}</div>` : ''}
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+  }
+
+  if (!customElements.get('interactive-product-grid')) {
+    customElements.define('interactive-product-grid', InteractiveProductGrid);
+  }
+</script>

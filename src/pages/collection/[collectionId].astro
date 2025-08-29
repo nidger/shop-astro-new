@@ -3,7 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import { Button } from '../../components/ui/button';
 import { allProducts, collections } from '../../data/products.ts';
-import ProductGrid from '../../components/ProductGrid.astro';
+import { InteractiveProductGrid } from '../../components/InteractiveProductGrid.tsx';
 
 export function getStaticPaths() {
   return collections.map((collection) => ({
@@ -20,7 +20,6 @@ if (!currentCollection) {
   return Astro.redirect('/404');
 }
 
-// Define the links for the breadcrumb component
 const breadcrumbLinks = [
   { text: 'Home', href: '/' },
   { text: 'Collections', href: '/collections' },
@@ -28,19 +27,17 @@ const breadcrumbLinks = [
 ];
 ---
 <Layout>
-  <main class="px-6 py-8">
-    <div class="mb-8">
+  <main>
+    <div class="px-6 pt-8">
       <Breadcrumb links={breadcrumbLinks} />
     </div>
-
-    <div class="mb-8">
-      <h1 class="text-4xl font-bold">{currentCollection.title}</h1>
-      <p class="text-muted-foreground mt-1">{productsInCollection.length} products</p>
-    </div>
-
-    <ProductGrid products={productsInCollection} />
-
-    <div class="text-center mt-12">
+    <InteractiveProductGrid 
+      client:load 
+      products={productsInCollection} 
+      title={currentCollection.title} 
+      productCount={productsInCollection.length} 
+    />
+    <div class="text-center my-12">
       <a href="/products">
         <Button variant="outline" size="lg">View All Products</Button>
       </a>
