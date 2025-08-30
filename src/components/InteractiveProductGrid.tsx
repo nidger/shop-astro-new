@@ -103,7 +103,7 @@ export function InteractiveProductGrid({ products, title }: { products: Product[
               <PopoverTrigger asChild>
                 <Button variant="outline">Filter</Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto z-50">
+              <PopoverContent className="w-auto z-50" style={{ viewTransitionName: 'filter-panel' }}>
                 <FilterPanel 
                 selectedColors={selectedColors}
                 selectedSizes={selectedSizes}
