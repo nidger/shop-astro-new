@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { flushSync } from 'react-dom';
 import type { Product } from '@/data/products';
 import { ProductCard } from './ProductCard';
 import { SortDropdown, sortOptions, type SortOption } from './SortDropdown';
@@ -59,21 +60,21 @@ export function InteractiveProductGrid({ products, title }: { products: Product[
       updater();
       return;
     }
-    document.startViewTransition(updater);
+    document.startViewTransition(() => {
+      flushSync(() => {
+        updater();
+      });
+    });
   };
 
   const handleSortChange = (newSortOrder: SortOption) => updateWithTransition(() => setSortOrder(newSortOrder));
   
   const handleColorChange = (colors: string[]) => {
     updateWithTransition(() => setSelectedColors(colors));
-    // To keep the panel open to allow for multi-select, comment out the line below.
-    setIsFilterOpen(false);
   };
   
   const handleSizeChange = (sizes: string[]) => {
     updateWithTransition(() => setSelectedSizes(sizes));
-    // To keep the panel open to allow for multi-select, comment out the line below.
-    setIsFilterOpen(false);
   };
   
   const handlePriceChange = (newPrice: PriceRange) => {
@@ -103,7 +104,7 @@ export function InteractiveProductGrid({ products, title }: { products: Product[
               <PopoverTrigger asChild>
                 <Button variant="outline">Filter</Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto z-50" style={{ viewTransitionName: 'filter-panel' }}>
+              <PopoverContent className="w-auto z-50">
                 <FilterPanel 
                 selectedColors={selectedColors}
                 selectedSizes={selectedSizes}
