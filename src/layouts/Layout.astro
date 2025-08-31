@@ -1,7 +1,7 @@
 ---
 import '../styles/globals.css';
 import Header from '../components/Header.astro';
-import { ViewTransitions } from 'astro:transitions';
+import { ClientRouter } from 'astro:transitions';
 import Footer from '../components/Footer.astro';
 ---
 <!doctype html>
@@ -13,10 +13,10 @@ import Footer from '../components/Footer.astro';
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>Astro</title>
-    <ViewTransitions fallback="swap" />
+    <ClientRouter />
   </head>
   <body>
-    <Header />
+    <Header transition:persist />
     <slot />
     <Footer />
   </body>
