@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
-import { ResponsiveNavContainer } from './ResponsiveNavContainer';
+import { ResponsivePanel } from './ResponsivePanel';
 
 const collections = [
   {
@@ -29,7 +29,7 @@ export function MobileNavigation() {
   );
 
   return (
-    <ResponsiveNavContainer open={isOpen} onOpenChange={setIsOpen} trigger={trigger}>
+    <ResponsivePanel open={isOpen} onOpenChange={setIsOpen} trigger={trigger} sheetSide="left">
       <div className="flex flex-col h-full">
         <div className="flex items-center justify-between p-4 border-b">
           <h4 className="font-semibold">Menu</h4>
@@ -58,6 +58,6 @@ export function MobileNavigation() {
           </a>
         </div>
       </div>
-    </ResponsiveNavContainer>
+    </ResponsivePanel>
   );
 }

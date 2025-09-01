@@ -5,7 +5,7 @@ import { formatSize } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Trash2, Plus, Minus, X } from 'lucide-react';
-import { ResponsiveCartContainer } from './ResponsiveCartContainer';
+import { ResponsivePanel } from './ResponsivePanel';
 
 export function CartSheet({ children }: { children: React.ReactNode }) {
   const { items, removeFromCart, clearCart, increaseQuantity, decreaseQuantity } = useCartStore();
@@ -50,7 +50,7 @@ export function CartSheet({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <ResponsiveCartContainer open={isOpen} onOpenChange={setIsOpen} trigger={children}>
+    <ResponsivePanel open={isOpen} onOpenChange={setIsOpen} trigger={children}>
       <div className="flex flex-col h-full">
         <div className="flex items-center justify-between p-4 border-b">
           <h4 className="font-semibold">Shopping Cart ({isHydrated ? totalItems : 0})</h4>
@@ -138,6 +138,6 @@ export function CartSheet({ children }: { children: React.ReactNode }) {
           </div>
         )}
       </div>
-    </ResponsiveCartContainer>
+    </ResponsivePanel>
   );
 }

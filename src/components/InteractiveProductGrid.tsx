@@ -6,7 +6,7 @@ import { SortDropdown, sortOptions, type SortOption } from './SortDropdown';
 import { Button } from '@/components/ui/button';
 import { FilterPanel } from './FilterPanel';
 import { ActiveFilterPills } from './ActiveFilterPills';
-import { FilterContainer } from './FilterContainer';
+import { ResponsivePanel } from './ResponsivePanel';
 
 interface PriceRange {
   from?: number;
@@ -121,7 +121,7 @@ export function InteractiveProductGrid({ products, title }: { products: Product[
         </div>
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center gap-2">
-            <FilterContainer open={isFilterOpen} onOpenChange={setIsFilterOpen} trigger={<Button variant="outline">Filter</Button>}>
+            <ResponsivePanel open={isFilterOpen} onOpenChange={setIsFilterOpen} trigger={<Button variant="outline">Filter</Button>} desktopAs="popover">
               <FilterPanel 
                 selectedColors={pendingColors}
                 selectedSizes={pendingSizes}
@@ -132,7 +132,7 @@ export function InteractiveProductGrid({ products, title }: { products: Product[
                 onClear={handleClearPendingFilters}
                 onClose={() => setIsFilterOpen(false)}
               />
-            </FilterContainer>
+            </ResponsivePanel>
             <ActiveFilterPills 
               selectedColors={appliedColors}
               selectedSizes={appliedSizes}
