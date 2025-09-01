@@ -28,7 +28,7 @@ export function ResponsivePanel({
       return (
         <Popover open={open} onOpenChange={onOpenChange}>
           <PopoverTrigger asChild>{trigger}</PopoverTrigger>
-          <PopoverContent className="w-auto z-50">{children}</PopoverContent>
+          <PopoverContent className="w-auto z-50" align="start">{children}</PopoverContent>
         </Popover>
       );
     }

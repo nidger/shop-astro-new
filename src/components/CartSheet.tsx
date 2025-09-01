@@ -52,12 +52,8 @@ export function CartSheet({ children }: { children: React.ReactNode }) {
   return (
     <ResponsivePanel open={isOpen} onOpenChange={setIsOpen} trigger={children}>
       <div className="flex flex-col h-full">
-        <div className="flex items-center justify-between p-4 border-b">
+        <div className="p-4 border-b">
           <h4 className="font-semibold">Shopping Cart ({isHydrated ? totalItems : 0})</h4>
-          <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="-mr-2">
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </Button>
         </div>
 
         {isHydrated ? (

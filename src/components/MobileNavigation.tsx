@@ -31,18 +31,13 @@ export function MobileNavigation() {
   return (
     <ResponsivePanel open={isOpen} onOpenChange={setIsOpen} trigger={trigger} sheetSide="left">
       <div className="flex flex-col h-full">
-        <div className="flex items-center justify-between p-4 border-b">
+        <div className="p-4 border-b">
           <h4 className="font-semibold">Menu</h4>
-          <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="-mr-2">
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </Button>
         </div>
         <div className="flex flex-col gap-4 p-4">
           <a href="/" className="text-lg font-medium" onClick={() => setIsOpen(false)}>
             Home
           </a>
-          <h3 className="text-lg font-medium">Collections</h3>
           {collections.map((collection) => (
             <a
               key={collection.id}

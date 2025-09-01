@@ -1,3 +1,4 @@
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,17 +29,27 @@ export function FilterPanel({
   onClear,
   onClose
 }: FilterPanelProps) {
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+
   return (
-    <div className="p-4 space-y-6 w-[300px] flex flex-col h-full">
-      <div className="flex items-center justify-between pb-4 border-b">
-        <h4 className="font-semibold">Filters</h4>
-        <Button variant="ghost" size="icon" onClick={onClose} className="-mr-2">
+    <div className="p-4 space-y-4 w-[300px] flex flex-col h-full">
+      <div className="flex items-center justify-between pb-2">
+        {isDesktop ? (
+          <div /> // Empty div to keep the X button on the right
+        ) : (
+          <h4 className="font-semibold">Filters</h4>
+        )}
+        <button
+          type="button"
+          onClick={onClose}
+          className="h-9 w-9 flex items-center justify-center rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary"
+        >
           <X className="h-4 w-4" />
           <span className="sr-only">Close</span>
-        </Button>
+        </button>
       </div>
 
-      <div className="flex-grow overflow-y-auto space-y-6 pr-4 -mr-4">
+      <div className="flex-grow overflow-y-auto space-y-4 pr-4 -mr-4">
         <div className="space-y-4">
           <h4 className="font-medium">Color</h4>
           <ToggleGroup 
@@ -47,10 +58,10 @@ export function FilterPanel({
             value={selectedColors}
             onValueChange={onColorChange}
           >
-            {Object.entries(colorOptions).map(([key, { name, hex }]) => (
+            {Object.entries(colorOptions).map(([key, { name, hex }], index) => (
               <ToggleGroupItem 
                 key={key} 
-                value={key} 
+                value={key}
                 className="h-8 w-8 rounded-full border-2 border-border data-[state=on]:ring-2 data-[state=on]:ring-ring data-[state=on]:ring-offset-2" 
                 style={{ backgroundColor: hex }} 
                 aria-label={name} 
@@ -75,7 +86,7 @@ export function FilterPanel({
           </ToggleGroup>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-4 pb-2">
           <h4 className="font-medium">Price</h4>
           <div className="flex items-center space-x-2">
             <div className="relative">
@@ -103,7 +114,7 @@ export function FilterPanel({
         </div>
       </div>
 
-      <div className="pt-4 border-t mt-auto flex items-center gap-x-2">
+      <div className="pt-2 border-t mt-auto flex items-center gap-x-2">
         <Button variant="outline" className="w-full" onClick={onClear}>Clear</Button>
         <Button className="w-full" onClick={onApply}>Apply</Button>
       </div>
