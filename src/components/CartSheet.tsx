@@ -3,14 +3,15 @@ import { useCartStore } from '@/stores/cartStore';
 import { colorOptions } from '@/data/variants';
 import { formatSize } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter } from '@/components/ui/sheet';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Trash2, Plus, Minus } from 'lucide-react';
+import { Trash2, Plus, Minus, X } from 'lucide-react';
+import { ResponsiveCartContainer } from './ResponsiveCartContainer';
 
 export function CartSheet({ children }: { children: React.ReactNode }) {
   const { items, removeFromCart, clearCart, increaseQuantity, decreaseQuantity } = useCartStore();
   const [loading, setLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     setIsHydrated(true);
@@ -49,17 +50,21 @@ export function CartSheet({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <Sheet>
-      <SheetTrigger asChild>{children}</SheetTrigger>
-      <SheetContent className="flex flex-col">
-        <SheetHeader>
-          <SheetTitle>Shopping Cart ({isHydrated ? totalItems : 0})</SheetTitle>
-        </SheetHeader>
+    <ResponsiveCartContainer open={isOpen} onOpenChange={setIsOpen} trigger={children}>
+      <div className="flex flex-col h-full">
+        <div className="flex items-center justify-between p-4 border-b">
+          <h4 className="font-semibold">Shopping Cart ({isHydrated ? totalItems : 0})</h4>
+          <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="-mr-2">
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </Button>
+        </div>
+
         {isHydrated ? (
           <>
-            <ScrollArea className="flex-grow pr-4">
+            <ScrollArea className="flex-grow pr-4 pl-4">
               {items.length > 0 ? (
-                <div className="space-y-4">
+                <div className="space-y-4 py-4">
                   {items.map((item) => {
                     const imageUrl = item.product.images && item.product.images.length > 0
                       ? item.product.images[0].src.src
@@ -111,20 +116,20 @@ export function CartSheet({ children }: { children: React.ReactNode }) {
               )}
             </ScrollArea>
             {items.length > 0 && (
-              <SheetFooter className="mt-auto border-t pt-4">
+              <div className="p-4 border-t mt-auto">
                 <div className="w-full space-y-4">
                   <div className="flex justify-between font-semibold text-lg">
                     <span>Total</span>
                     <span>£{totalPrice.toFixed(2)}</span>
                   </div>
-                  <Button onClick={handleCheckout} disabled={loading} fullWidth size="lg">
+                  <Button onClick={handleCheckout} disabled={loading} className="w-full" size="lg">
                     {loading ? 'Processing...' : 'Checkout'}
                   </Button>
-                  <Button variant="outline" fullWidth onClick={() => clearCart()} size="lg">
+                  <Button variant="outline" className="w-full" onClick={() => clearCart()} size="lg">
                     Clear Cart
                   </Button>
                 </div>
-              </SheetFooter>
+              </div>
             )}
           </>
         ) : (
@@ -132,7 +137,7 @@ export function CartSheet({ children }: { children: React.ReactNode }) {
             <p className="text-muted-foreground">Loading cart...</p>
           </div>
         )}
-      </SheetContent>
-    </Sheet>
+      </div>
+    </ResponsiveCartContainer>
   );
 }

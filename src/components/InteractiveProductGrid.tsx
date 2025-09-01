@@ -1,12 +1,12 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { flushSync } from 'react-dom';
 import type { Product } from '@/data/products';
 import { ProductCard } from './ProductCard';
 import { SortDropdown, sortOptions, type SortOption } from './SortDropdown';
 import { Button } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { FilterPanel } from './FilterPanel';
 import { ActiveFilterPills } from './ActiveFilterPills';
+import { FilterContainer } from './FilterContainer';
 
 interface PriceRange {
   from?: number;
@@ -14,28 +14,44 @@ interface PriceRange {
 }
 
 export function InteractiveProductGrid({ products, title }: { products: Product[], title: string }) {
+  // Applied state
   const [sortOrder, setSortOrder] = useState<SortOption>('price-asc');
-  const [selectedColors, setSelectedColors] = useState<string[]>([]);
-  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
-  const [priceRange, setPriceRange] = useState<PriceRange>({});
+  const [appliedColors, setAppliedColors] = useState<string[]>([]);
+  const [appliedSizes, setAppliedSizes] = useState<string[]>([]);
+  const [appliedPriceRange, setAppliedPriceRange] = useState<PriceRange>({});
+
+  // Pending state (for inside the filter panel)
+  const [pendingColors, setPendingColors] = useState<string[]>([]);
+  const [pendingSizes, setPendingSizes] = useState<string[]>([]);
+  const [pendingPriceRange, setPendingPriceRange] = useState<PriceRange>({});
+
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  // Sync pending state when panel opens
+  useEffect(() => {
+    if (isFilterOpen) {
+      setPendingColors(appliedColors);
+      setPendingSizes(appliedSizes);
+      setPendingPriceRange(appliedPriceRange);
+    }
+  }, [isFilterOpen, appliedColors, appliedSizes, appliedPriceRange]);
 
   const filteredAndSortedProducts = useMemo(() => {
     const getPrice = (priceString: string) => parseFloat(priceString.replace(/[^\d.-]/g, ''));
 
     let filtered = [...products];
 
-    if (selectedColors.length > 0) {
-      filtered = filtered.filter(p => p.colors && p.colors.some(c => selectedColors.includes(c)));
+    if (appliedColors.length > 0) {
+      filtered = filtered.filter(p => p.colors && p.colors.some(c => appliedColors.includes(c)));
     }
-    if (selectedSizes.length > 0) {
-      filtered = filtered.filter(p => p.sizes && p.sizes.some(s => selectedSizes.includes(s)));
+    if (appliedSizes.length > 0) {
+      filtered = filtered.filter(p => p.sizes && p.sizes.some(s => appliedSizes.includes(s)));
     }
-    if (priceRange.from !== undefined && priceRange.from >= 0) {
-      filtered = filtered.filter(p => getPrice(p.price) >= priceRange.from);
+    if (appliedPriceRange.from !== undefined && appliedPriceRange.from >= 0) {
+      filtered = filtered.filter(p => getPrice(p.price) >= appliedPriceRange.from);
     }
-    if (priceRange.to !== undefined && priceRange.to >= 0) {
-      filtered = filtered.filter(p => getPrice(p.price) <= priceRange.to);
+    if (appliedPriceRange.to !== undefined && appliedPriceRange.to >= 0) {
+      filtered = filtered.filter(p => getPrice(p.price) <= appliedPriceRange.to);
     }
 
     switch (sortOrder) {
@@ -53,7 +69,7 @@ export function InteractiveProductGrid({ products, title }: { products: Product[
         break;
     }
     return filtered;
-  }, [products, sortOrder, selectedColors, selectedSizes, priceRange]);
+  }, [products, sortOrder, appliedColors, appliedSizes, appliedPriceRange]);
 
   const updateWithTransition = (updater: () => void) => {
     if (!document.startViewTransition) {
@@ -68,27 +84,32 @@ export function InteractiveProductGrid({ products, title }: { products: Product[
   };
 
   const handleSortChange = (newSortOrder: SortOption) => updateWithTransition(() => setSortOrder(newSortOrder));
-  
-  const handleColorChange = (colors: string[]) => {
-    updateWithTransition(() => setSelectedColors(colors));
-  };
-  
-  const handleSizeChange = (sizes: string[]) => {
-    updateWithTransition(() => setSelectedSizes(sizes));
-  };
-  
-  const handlePriceChange = (newPrice: PriceRange) => {
-    updateWithTransition(() => setPriceRange(prev => ({...prev, ...newPrice})));
+
+  const handleApplyFilters = () => {
+    updateWithTransition(() => {
+      setAppliedColors(pendingColors);
+      setAppliedSizes(pendingSizes);
+      setAppliedPriceRange(pendingPriceRange);
+    });
+    setIsFilterOpen(false);
   };
 
-  const handleClearColor = (colorToClear: string) => {
-    updateWithTransition(() => setSelectedColors(prev => prev.filter(c => c !== colorToClear)));
+  const handleClearPendingFilters = () => {
+    setPendingColors([]);
+    setPendingSizes([]);
+    setPendingPriceRange({});
   };
-  const handleClearSize = (sizeToClear: string) => {
-    updateWithTransition(() => setSelectedSizes(prev => prev.filter(s => s !== sizeToClear)));
-  };
-  const handleClearPrice = () => {
-    updateWithTransition(() => setPriceRange({}));
+
+  const handleClearAppliedFilter = (type: 'color' | 'size' | 'price', value?: string) => {
+    updateWithTransition(() => {
+      if (type === 'color' && value) {
+        setAppliedColors(prev => prev.filter(c => c !== value));
+      } else if (type === 'size' && value) {
+        setAppliedSizes(prev => prev.filter(s => s !== value));
+      } else if (type === 'price') {
+        setAppliedPriceRange({});
+      }
+    });
   };
 
   return (
@@ -100,27 +121,25 @@ export function InteractiveProductGrid({ products, title }: { products: Product[
         </div>
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center gap-2">
-            <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
-              <PopoverTrigger asChild>
-                <Button variant="outline">Filter</Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto z-50">
-                <FilterPanel 
-                selectedColors={selectedColors}
-                selectedSizes={selectedSizes}
-                onColorChange={handleColorChange}
-                onSizeChange={handleSizeChange}
-                onPriceChange={handlePriceChange}
+            <FilterContainer open={isFilterOpen} onOpenChange={setIsFilterOpen} trigger={<Button variant="outline">Filter</Button>}>
+              <FilterPanel 
+                selectedColors={pendingColors}
+                selectedSizes={pendingSizes}
+                onColorChange={setPendingColors}
+                onSizeChange={setPendingSizes}
+                onPriceChange={setPendingPriceRange}
+                onApply={handleApplyFilters}
+                onClear={handleClearPendingFilters}
+                onClose={() => setIsFilterOpen(false)}
               />
-              </PopoverContent>
-            </Popover>
+            </FilterContainer>
             <ActiveFilterPills 
-              selectedColors={selectedColors}
-              selectedSizes={selectedSizes}
-              priceRange={priceRange}
-              onClearColor={handleClearColor}
-              onClearSize={handleClearSize}
-              onClearPrice={handleClearPrice}
+              selectedColors={appliedColors}
+              selectedSizes={appliedSizes}
+              priceRange={appliedPriceRange}
+              onClearColor={(color) => handleClearAppliedFilter('color', color)}
+              onClearSize={(size) => handleClearAppliedFilter('size', size)}
+              onClearPrice={() => handleClearAppliedFilter('price')}
             />
           </div>
           <SortDropdown onSortChange={handleSortChange} defaultValue={sortOrder} />

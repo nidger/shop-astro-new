@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import { ResponsiveNavContainer } from './ResponsiveNavContainer';
 
 const collections = [
   {
@@ -21,16 +21,24 @@ const collections = [
 export function MobileNavigation() {
   const [isOpen, setIsOpen] = React.useState(false);
 
+  const trigger = (
+    <Button variant="outline" size="sm">
+      <Menu className="h-4 w-4" />
+      <span className="sr-only">Open menu</span>
+    </Button>
+  );
+
   return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetTrigger asChild>
-        <Button variant="outline" size="sm">
-          <Menu className="h-4 w-4" />
-          <span className="sr-only">Open menu</span>
-        </Button>
-      </SheetTrigger>
-      <SheetContent side="right">
-        <div className="flex flex-col gap-4 py-8">
+    <ResponsiveNavContainer open={isOpen} onOpenChange={setIsOpen} trigger={trigger}>
+      <div className="flex flex-col h-full">
+        <div className="flex items-center justify-between p-4 border-b">
+          <h4 className="font-semibold">Menu</h4>
+          <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="-mr-2">
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </Button>
+        </div>
+        <div className="flex flex-col gap-4 p-4">
           <a href="/" className="text-lg font-medium" onClick={() => setIsOpen(false)}>
             Home
           </a>
@@ -49,7 +57,7 @@ export function MobileNavigation() {
             Contest
           </a>
         </div>
-      </SheetContent>
-    </Sheet>
+      </div>
+    </ResponsiveNavContainer>
   );
 }
