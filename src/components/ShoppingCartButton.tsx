@@ -15,7 +15,13 @@ const ShoppingCartButton = () => {
   const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
 
   if (!isHydrated) {
-    return null; // Or a loading skeleton
+    // Render a placeholder button with the same size and variant
+    // to prevent layout shift during hydration.
+    return (
+      <Button variant="outline" size="sm" disabled>
+        <ShoppingCart className="h-4 w-4" />
+      </Button>
+    );
   }
 
   return (
