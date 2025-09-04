@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { colorOptions } from "@/data/variants";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { X } from 'lucide-react';
+import { cn } from "@/lib/utils";
 
 const sizeOptions = ["S", "M", "L", "XL"];
 
@@ -32,7 +33,10 @@ export function FilterPanel({
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   return (
-    <div className="p-4 space-y-4 w-[300px] flex flex-col h-full">
+    <div className={cn(
+      "p-4 space-y-4 flex flex-col h-full",
+      isDesktop ? "w-[300px]" : "w-full max-w-md mx-auto"
+    )}>
       <div className="flex items-center justify-between pb-2">
         {isDesktop ? (
           <div /> // Empty div to keep the X button on the right
