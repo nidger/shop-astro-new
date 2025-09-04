@@ -9,55 +9,38 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
-
-const collections = [
-  {
-    id: "summer",
-    title: "SUMMER 2025",
-    description: "Bright, bold, and ready for the beach.",
-  },
-  {
-    id: "apparel",
-    title: "APPAREL",
-    description: "Look good, feel good, code good.",
-  },
-  {
-    id: "stickers",
-    title: "STICKERS",
-    description: "Decorate your gear with the coolest stickers in the galaxy.",
-  },
-];
+import { navigationLinks } from "@/data/navigation";
 
 export function DesktopNavigation() {
   return (
     <NavigationMenu className="z-50">
       <NavigationMenuList>
-        <NavigationMenuItem>
-          <NavigationMenuLink href="/" className={navigationMenuTriggerStyle()}>
-            Home
-          </NavigationMenuLink>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>Collections</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-              {collections.map((collection) => (
-                <ListItem
-                  key={collection.title}
-                  title={collection.title}
-                  href={`/collection/${collection.id}`}
-                >
-                  {collection.description}
-                </ListItem>
-              ))}
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <NavigationMenuLink href="/#contest-section" className={navigationMenuTriggerStyle()}>
-            Contest
-          </NavigationMenuLink>
-        </NavigationMenuItem>
+        {navigationLinks.map((link) => (
+          <NavigationMenuItem key={link.title}>
+            {link.href ? (
+              <NavigationMenuLink href={link.href} className={navigationMenuTriggerStyle()}>
+                {link.title}
+              </NavigationMenuLink>
+            ) : (
+              <>
+                <NavigationMenuTrigger>{link.title}</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                    {link.items?.map((item) => (
+                      <ListItem
+                        key={item.title}
+                        title={item.title}
+                        href={item.href}
+                      >
+                        {item.description}
+                      </ListItem>
+                    ))}
+                  </ul>
+                </NavigationMenuContent>
+              </>
+            )}
+          </NavigationMenuItem>
+        ))}
       </NavigationMenuList>
     </NavigationMenu>
   );

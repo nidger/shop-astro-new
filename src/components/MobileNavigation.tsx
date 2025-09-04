@@ -1,22 +1,9 @@
+
 import * as React from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu } from "lucide-react";
 import { ResponsivePanel } from './ResponsivePanel';
-
-const collections = [
-  {
-    id: "summer",
-    title: "SUMMER 2025",
-  },
-  {
-    id: "apparel",
-    title: "APPAREL",
-  },
-  {
-    id: "stickers",
-    title: "STICKERS",
-  },
-];
+import { navigationLinks } from "@/data/navigation";
 
 export function MobileNavigation() {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -35,24 +22,34 @@ export function MobileNavigation() {
           <h4 className="font-semibold">Menu</h4>
         </div>
         <div className="flex flex-col gap-4 p-4">
-          <a href="/" className="text-lg font-medium" onClick={() => setIsOpen(false)}>
-            Home
-          </a>
-          {collections.map((collection) => (
-            <a
-              key={collection.id}
-              href={`/collection/${collection.id}`}
-              className="text-muted-foreground hover:text-foreground"
-              onClick={() => setIsOpen(false)}
-            >
-              {collection.title}
-            </a>
-          ))}
-          <a href="/#contest-section" className="text-lg font-medium" onClick={() => setIsOpen(false)}>
-            Contest
-          </a>
+          {navigationLinks.map((link) => {
+            if (link.items) {
+              return link.items.map((item) => (
+                <a
+                  key={item.title}
+                  href={item.href}
+                  className="text-muted-foreground hover:text-foreground"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {item.title}
+                </a>
+              ));
+            } else {
+              return (
+                <a
+                  key={link.title}
+                  href={link.href}
+                  className="text-lg font-medium"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {link.title}
+                </a>
+              );
+            }
+          })}
         </div>
       </div>
     </ResponsivePanel>
   );
 }
+
